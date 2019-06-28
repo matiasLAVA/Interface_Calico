@@ -63,6 +63,13 @@ namespace Calico.DAOs
                                    && almacenes.Contains(R.irec_almacen)
                                    && tipos.Contains(R.irec_tipo)
                                 select R).Include(D => D.tblInformeRecepcionDetalle);
+
+                    Console.WriteLine("Query: " + "(from R in context.tblInformeRecepcion" +
+                                                  "where R.irec_emplazamiento == emplazamiento" +
+                                                  "&& almacenes.Contains(R.irec_almacen) " +
+                                                  "&& tipos.Contains(R.irec_tipo) " +
+                                                  "select R).Include(D => D.tblInformeRecepcionDetalle); ");
+
                     return query.ToList<tblInformeRecepcion>();
                 }
             } catch (Exception e)

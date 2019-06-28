@@ -25,6 +25,10 @@ namespace Calico.service
 
         public List<tblInformeRecepcion> FindInformes(String emplazamiento, String[] almacenes, String[] tipos)
         {
+            Console.WriteLine("Se realiza la query en busca de datos, con los siguientes filtros:");
+            Console.WriteLine("Emplazamiento = " + emplazamiento);
+            Console.WriteLine("Almacenes = " + string.Join(",", almacenes));
+            Console.WriteLine("Tipos = " + string.Join(",", tipos));
             return dao.FindInformes(emplazamiento, almacenes, tipos);
         }
 
