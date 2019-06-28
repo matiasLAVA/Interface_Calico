@@ -72,7 +72,8 @@ namespace Calico.interfaces.recepcionOR
         {
             tblRecepcionDetalle detalle = new tblRecepcionDetalle();
             detalle.recd_serie = String.Empty;
-            detalle.recd_linea = !String.IsNullOrWhiteSpace(pedidoDTO.F4211_LNID) ? Convert.ToInt64(Convert.ToDouble(pedidoDTO.F4211_LNID)) * 1000 : 0;
+            double linea = String.IsNullOrWhiteSpace(pedidoDTO.F4211_LNID) ? 0.0 : double.Parse(pedidoDTO.F4211_LNID, System.Globalization.CultureInfo.InvariantCulture) * 1000;
+            detalle.recd_linea = Convert.ToInt64(linea);
             detalle.recd_lineaPedido = 0;
             detalle.recd_lote = !String.IsNullOrWhiteSpace(pedidoDTO.F4211_LOTN) ? pedidoDTO.F4211_LOTN.Trim() : String.Empty;
             detalle.recd_cantidad = !String.IsNullOrWhiteSpace(pedidoDTO.F4211_UORG) ? Convert.ToInt64(Convert.ToDouble(pedidoDTO.F4211_UORG)) : 0;
