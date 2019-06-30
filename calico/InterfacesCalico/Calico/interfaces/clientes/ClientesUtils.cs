@@ -82,14 +82,6 @@ namespace Calico.interfaces.clientes
             }
         }
 
-        public String ConvertDateTimeInString(DateTime dateTime)
-        {
-            String year = dateTime.Year.ToString("D4");
-            String month = dateTime.Month.ToString("D2");
-            String day = dateTime.Day.ToString("D2");
-            return year + month + day;
-        }
-
         private void SetValues(JToken rowset, String key, Dictionary<String, tblSubCliente> diccionary, String columnId, String columnValue)
         {
             if (columnValue.Equals(Constants.ADD1ADD2ADD3))

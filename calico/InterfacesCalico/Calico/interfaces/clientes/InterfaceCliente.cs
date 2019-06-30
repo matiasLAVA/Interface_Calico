@@ -56,9 +56,7 @@ namespace Calico.interfaces.clientes
             lastTime = Utils.GetDateToProcess(dateTime, process.fecha_ultima);
 
             /* Convierto DateTime a String */
-            // VERY HARD CODE POR FECHA AL REVES
-            // String lastStringTime = Utils.ConvertDateTimeInString(lastTime); // correcto
-            String lastStringTime = clientesUtils.ConvertDateTimeInString(lastTime); // hardcode
+            String lastStringTime = Utils.ConvertDateTimeInString(lastTime);
 
             /* Cargamos archivo con parametros propios para cada interface */
             Console.WriteLine("Cargamos archivo de configuracion");
