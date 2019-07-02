@@ -43,8 +43,9 @@ namespace Calico.interfaces.recepcion
                 dictionary.TryGetValue(receptionDTO.F4201_DOCO, out recepcion);
                 if (recepcion == null)
                 {
+                    String tipo = FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_RECEPCION + "." + Constants.TIPO, receptionDTO.F4201_DCTO);
                     /* CABEZERA */
-                    recepcion = fillCabezera(receptionDTO, emplazamiento);
+                    recepcion = fillCabezera(receptionDTO, emplazamiento, tipo);
                     /* DETALLE */
                     tblRecepcionDetalle detalle = fillDetalle(receptionDTO);
                     recepcion.tblRecepcionDetalle.Add(detalle);
@@ -59,7 +60,7 @@ namespace Calico.interfaces.recepcion
             }
         }
 
-        private tblRecepcion fillCabezera(ReceptionDTO receptionDTO, String emplazamiento)
+        private tblRecepcion fillCabezera(ReceptionDTO receptionDTO, String emplazamiento,String tipo)
         {
             tblRecepcion recepcion = new tblRecepcion();
             recepcion.recc_contacto = String.Empty;
@@ -68,7 +69,7 @@ namespace Calico.interfaces.recepcion
             recepcion.recc_motivoDevolucion = String.Empty;
             recepcion.recc_observaciones = String.Empty;
             recepcion.recc_emplazamiento = emplazamiento;
-            recepcion.recc_trec_codigo = receptionDTO.F4201_DCTO;
+            recepcion.recc_trec_codigo = tipo;
             recepcion.recc_numero = receptionDTO.F4201_DOCO;
 
             if (!String.IsNullOrWhiteSpace(receptionDTO.F4201_OPDJ))
