@@ -61,11 +61,21 @@ namespace Calico.DAOs
                 {
                     var query = (from R in context.tblInformePedido
                                  join P in context.tblProceso on R.ipec_proc_id equals P.proc_id
-                                 where R.ipec_proc_id == tipoProceso
+                                 //where R.ipec_proc_id == tipoProceso              JHV 
+                                 where P.proc_tipoProceso == tipoProceso
                                     && R.ipec_emplazamiento == emplazamiento
                                     && almacenes.Contains(R.ipec_almacen)
                                     && tipos.Contains(R.ipec_tipo)
                                  select R).Include(D => D.tblInformePedidoDetalle);
+
+                    Console.WriteLine("Query: " + @"(from R in context.tblInformePedido
+                                 join P in context.tblProceso on R.ipec_proc_id equals P.proc_id
+                                 where P.proc_tipoProceso == tipoProceso
+                                    && R.ipec_emplazamiento == emplazamiento
+                                    && almacenes.Contains(R.ipec_almacen)
+                                    && tipos.Contains(R.ipec_tipo)
+                                 select R).Include(D => D.tblInformePedidoDetalle)");
+
                     return query.ToList<tblInformePedido>();
                 }
             }
