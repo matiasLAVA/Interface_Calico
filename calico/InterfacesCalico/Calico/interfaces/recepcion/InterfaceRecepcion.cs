@@ -72,7 +72,7 @@ namespace Calico.interfaces.recepcion
             String user = FilePropertyUtils.Instance.GetValueString(Constants.BASIC_AUTH, Constants.USER);
             String pass = FilePropertyUtils.Instance.GetValueString(Constants.BASIC_AUTH, Constants.PASS);
             Console.WriteLine("Usuario del Servicio Rest: " + user);
-            
+
             /* Obtenemos la URL del archivo */
             String url = FilePropertyUtils.Instance.GetValueString(INTERFACE + "." + Constants.URLS, Constants.INTERFACE_RECEPCION_URL);
 
@@ -142,7 +142,7 @@ namespace Calico.interfaces.recepcion
                         detalle.recd_proc_id = recc_proc_id;
                     }
                     // ¿La pude guardar?
-                    Console.WriteLine("Procesando recepcion: " + entry.Value.recc_numero);
+                    Console.WriteLine("Procesando recepcion nro. de OT: " + entry.Value.recc_numero);
                     if (serviceRecepcion.Save(entry.Value))
                         count++;
                     else

@@ -40,7 +40,8 @@ namespace Calico.interfaces.recepcion
             foreach (ReceptionDTO receptionDTO in receptionDTOList)
             {
                 tblRecepcion recepcion = null;
-                dictionary.TryGetValue(receptionDTO.F4201_DOCO, out recepcion);
+                //dictionary.TryGetValue(receptionDTO.F4201_DOCO, out recepcion); JHV 28/06 se pasa a trabajar con la OT.
+                dictionary.TryGetValue(receptionDTO.F4211_RORN, out recepcion);
                 if (recepcion == null)
                 {
                     String tipo = FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_RECEPCION + "." + Constants.TIPO, receptionDTO.F4201_DCTO);
@@ -49,7 +50,8 @@ namespace Calico.interfaces.recepcion
                     /* DETALLE */
                     tblRecepcionDetalle detalle = fillDetalle(receptionDTO);
                     recepcion.tblRecepcionDetalle.Add(detalle);
-                    dictionary.Add(receptionDTO.F4201_DOCO, recepcion);
+                    //dictionary.Add(receptionDTO.F4201_DOCO, recepcion);
+                    dictionary.Add(receptionDTO.F4211_RORN, recepcion);
                 }
                 else
                 {
@@ -60,7 +62,7 @@ namespace Calico.interfaces.recepcion
             }
         }
 
-        private tblRecepcion fillCabezera(ReceptionDTO receptionDTO, String emplazamiento,String tipo)
+        private tblRecepcion fillCabezera(ReceptionDTO receptionDTO, String emplazamiento, String tipo)
         {
             tblRecepcion recepcion = new tblRecepcion();
             recepcion.recc_contacto = String.Empty;
@@ -70,7 +72,8 @@ namespace Calico.interfaces.recepcion
             recepcion.recc_observaciones = String.Empty;
             recepcion.recc_emplazamiento = emplazamiento;
             recepcion.recc_trec_codigo = tipo;
-            recepcion.recc_numero = receptionDTO.F4201_DOCO;
+            //recepcion.recc_numero = receptionDTO.F4201_DOCO; JHV 28/06 se pasa a trabajar con la OT.
+            recepcion.recc_numero = receptionDTO.F4211_RORN;
 
             if (!String.IsNullOrWhiteSpace(receptionDTO.F4201_OPDJ))
             {
@@ -82,9 +85,8 @@ namespace Calico.interfaces.recepcion
                 recepcion.recc_fechaEntrega = Utils.ParseDate(Constants.FECHA_DEFAULT, "yyyy/MM/dd");
             }
 
-            recepcion.recc_proveedor = !String.IsNullOrWhiteSpace(receptionDTO.F4211_MCU) ? receptionDTO.F4211_MCU.Trim() : String.Empty;
-            String an8 = !String.IsNullOrWhiteSpace(receptionDTO.F4211_AN8) ? receptionDTO.F4211_AN8.Trim() : String.Empty;
-            recepcion.recc_almacen = FilePropertyUtils.Instance.GetValueString(Constants.ALMACEN, an8);
+            recepcion.recc_proveedor = !String.IsNullOrWhiteSpace(receptionDTO.F4211_AN8) ? receptionDTO.F4211_AN8.Trim() : String.Empty;
+            recepcion.recc_almacen = FilePropertyUtils.Instance.GetValueString(Constants.ALMACEN, recepcion.recc_proveedor);
 
             // VERY HARDCODE
             recepcion.recc_fechaEmision = Utils.ParseDate(Constants.FECHA_DEFAULT, "yyyy/MM/dd");
