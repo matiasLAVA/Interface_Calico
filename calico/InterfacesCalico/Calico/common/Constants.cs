@@ -42,7 +42,8 @@ namespace Calico.common
         public const String INTERFACE_PEDIDOS_LETRA = "Letra";
         public const String INTERFACE_PEDIDOS_URL = "PedidosURL";
         public const String INTERFACE_PEDIDOS_URL_POST = "PedidosURL_POST";
-		// INFORME PEDIDOS
+        public const String INTERFACE_PEDIDOS_AREA_MUELLE = "areaMuelle";
+        // INFORME PEDIDOS
         public const String INTERFACE_INFORME_PEDIDOS = "InformePedido";
         public const String INTERFACE_INFORME_PEDIDO_URL = "InformePedidoURL";
         public const String INTERFACE_INFORME_PEDIDO_LAST_STATUS = "laststatus";

@@ -138,23 +138,34 @@ namespace Calico.interfaces.pedidos
         }
 
 
-        public void MappingPedidoDTOPedido(List<PedidoDTO> pedidoDTOList, Dictionary<string, tblPedido> dictionary, String emplazamiento, String cliente)
+        public void MappingPedidoDTOPedido(List<PedidoDTO> pedidoDTOList, Dictionary<string, tblPedido> dictionary, String emplazamiento, String cliente,Boolean fromRecepcionOR)
         {
             foreach(PedidoDTO pedidoDTO in pedidoDTOList)
             {
                 tblPedido pedido = null;
+                String tipoPedido;
+                String letra;
                 String compania = Utils.GetValueOrEmpty(FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_PEDIDOS + "." + Constants.COMPANIA, pedidoDTO.F4211_SRP1));
 
                 dictionary.TryGetValue(pedidoDTO.F4201_DOCO, out pedido);
                 if (pedido == null)
                 {
-                    String tipoPedido = Utils.GetValueOrEmpty(FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_PEDIDOS + "." + Constants.TIPO_PEDIDO, pedidoDTO.F4201_DCTO));
-                    String letra = Utils.GetValueOrEmpty(FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_PEDIDOS + "." + Constants.INTERFACE_PEDIDOS_LETRA, pedidoDTO.F4201_DCTO));
+                    if (fromRecepcionOR)
+                    {
+                        tipoPedido = Utils.GetValueOrEmpty(FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_RECEPCION_OR + "." + Constants.TIPO_PEDIDO, pedidoDTO.F4201_DCTO));
+                        letra = Utils.GetValueOrEmpty(FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_RECEPCION_OR + "." + Constants.INTERFACE_PEDIDOS_LETRA, pedidoDTO.F4201_DCTO));
+                    }
+                    else
+                    {
+                        tipoPedido = Utils.GetValueOrEmpty(FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_PEDIDOS + "." + Constants.TIPO_PEDIDO, pedidoDTO.F4201_DCTO));
+                        letra = Utils.GetValueOrEmpty(FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_PEDIDOS + "." + Constants.INTERFACE_PEDIDOS_LETRA, pedidoDTO.F4201_DCTO));
+                    }
+                    
                     String almacen = Utils.GetValueOrEmpty(FilePropertyUtils.Instance.GetValueString(Constants.ALMACEN, pedidoDTO.F4201_MCU));
                     String sucursal = Utils.GetValueOrEmpty(FilePropertyUtils.Instance.GetValueString(Constants.SUCURSAL, pedidoDTO.F4201_MCU));
-
+                    String areaMuelle = Utils.GetValueOrEmpty(FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_PEDIDOS, Constants.INTERFACE_PEDIDOS_AREA_MUELLE));
                     /* CABEZERA */
-                    pedido = fillCabezera(pedidoDTO, emplazamiento, letra, cliente, tipoPedido, almacen, sucursal);
+                    pedido = fillCabezera(pedidoDTO, emplazamiento, letra, cliente, tipoPedido, almacen, sucursal,areaMuelle);
                     /* DETALLE */
                     tblPedidoDetalle detalle = fillDetalle(pedidoDTO, compania);
                     pedido.tblPedidoDetalle.Add(detalle);
@@ -169,7 +180,7 @@ namespace Calico.interfaces.pedidos
             }
         }
 
-        private tblPedido fillCabezera(PedidoDTO pedidoDTO, String emplazamiento, String letra, String cliente, String tipoPedido,String almacen,String sucursal)
+        private tblPedido fillCabezera(PedidoDTO pedidoDTO, String emplazamiento, String letra, String cliente, String tipoPedido,String almacen,String sucursal,String areaMuelle)
         {
             tblPedido pedido = new tblPedido();
             pedido.pedc_emplazamiento = emplazamiento;
@@ -199,7 +210,7 @@ namespace Calico.interfaces.pedidos
             pedido.pedc_localidad =  !String.IsNullOrWhiteSpace(pedidoDTO.F4006_CTY1) ? pedidoDTO.F4006_CTY1.Trim() : String.Empty;
             pedido.pedc_domicilio = pedidoDTO.F4006_ADD1 + " " + pedidoDTO.F4006_ADD2 + " " + pedidoDTO.F4006_ADD3 + " " + pedidoDTO.F4006_ADD4;
 
-            pedido.pedc_areaMuelle = String.Empty;
+            pedido.pedc_areaMuelle = areaMuelle;
             pedido.pedc_centroCosto = String.Empty;
             pedido.pedc_contraRembolso = 0;
             pedido.pedc_entregaParcial = false;
@@ -220,7 +231,7 @@ namespace Calico.interfaces.pedidos
             detalle.pedd_compania = !String.IsNullOrWhiteSpace(compania) ? compania.Trim() : String.Empty;
             detalle.pedd_producto = !String.IsNullOrWhiteSpace(pedidoDTO.F4211_LITM) ? pedidoDTO.F4211_LITM : String.Empty;
             detalle.pedd_lote = !String.IsNullOrWhiteSpace(pedidoDTO.F4211_LOTN) ? pedidoDTO.F4211_LOTN : String.Empty;
-            detalle.pedd_cantidad = !String.IsNullOrWhiteSpace(pedidoDTO.F4211_UORG) ? Convert.ToDecimal(pedidoDTO.F4211_UORG) : 0;
+            detalle.pedd_cantidad = !String.IsNullOrWhiteSpace(pedidoDTO.F4211_UORG) ? Math.Abs(Convert.ToDecimal(pedidoDTO.F4211_UORG)) : 0;
 
             detalle.pedd_despachoParcial = false;
             detalle.pedd_epro_codigo = String.Empty;

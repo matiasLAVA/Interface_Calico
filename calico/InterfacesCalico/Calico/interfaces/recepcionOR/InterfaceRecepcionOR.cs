@@ -90,9 +90,9 @@ namespace Calico.interfaces.recepcionOR
             int countAlreadyProcessPedido = 0;
             int countAlreadyProcessRecepcion = 0;
             int? tipoMensaje = 0;
-            int tipoProceso = FilePropertyUtils.Instance.GetValueInt(INTERFACE, Constants.TIPO_PROCESO);
+            int tipoProcesoPedido = FilePropertyUtils.Instance.GetValueInt(Constants.INTERFACE_PEDIDOS, Constants.TIPO_PROCESO);
+            int tipoProcesoRecepcion = FilePropertyUtils.Instance.GetValueInt(Constants.INTERFACE_RECEPCION, Constants.NUMERO_INTERFACE);
             int codigoCliente = FilePropertyUtils.Instance.GetValueInt(INTERFACE, Constants.NUMERO_CLIENTE);
-            Console.WriteLine("Codigo de interface: " + tipoProceso);
 
             /* Mapping */
             List<PedidoDTO> pedidosDTO = null;
@@ -109,7 +109,7 @@ namespace Calico.interfaces.recepcionOR
 
             if (pedidosDTO.Any())
             {
-                recepcionORUtils.MappingPedidoDTOPedido(pedidosDTO, dictionary, emplazamiento, cliente);
+                recepcionORUtils.MappingPedidoDTOPedido(pedidosDTO, dictionary, emplazamiento, cliente,true);
                 recepcionORUtils.MappingPedidoDTORecepcion(pedidosDTO, dictionaryRecept, emplazamientoRecept);
                 // Validamos si hay que insertar o descartar el pedido
                 foreach (KeyValuePair<string, tblPedido> entry in dictionary)
@@ -123,7 +123,7 @@ namespace Calico.interfaces.recepcionOR
                     else // No está procesada! la voy a guardar
                     {
                         // LLamo al SP y seteo su valor a la cabecera y sus detalles
-                        int recc_proc_id = servicePedido.CallProcedure(tipoProceso, tipoMensaje);
+                        int recc_proc_id = servicePedido.CallProcedure(tipoProcesoPedido, tipoMensaje);
                         entry.Value.pedc_proc_id = recc_proc_id;
                         foreach (tblPedidoDetalle detalle in entry.Value.tblPedidoDetalle)
                         {
@@ -151,7 +151,7 @@ namespace Calico.interfaces.recepcionOR
                     else
                     {
                         // LLamo al SP y seteo su valor a la cabecera y sus detalles
-                        int recc_proc_id = serviceRecepcion.CallProcedure(tipoProceso, tipoMensaje);
+                        int recc_proc_id = serviceRecepcion.CallProcedure(tipoProcesoRecepcion, tipoMensaje);
                         entry.Value.recc_proc_id = recc_proc_id;
 
                         foreach (tblRecepcionDetalle detalle in entry.Value.tblRecepcionDetalle)

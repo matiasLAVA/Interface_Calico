@@ -121,24 +121,24 @@ namespace Calico.interfaces.clientes
             }
             if (Constants.MLNM.Equals(key))
             {
-                cliente.subc_razonSocial = data;
+                cliente.subc_razonSocial = Utils.GetValueOrEmpty(data);
             }
             else if (Constants.TAX.Equals(key))
             {
                 String cuit = String.IsNullOrEmpty(data) ? String.Empty : data;
-                cliente.subc_cuit = cuit.Length > 13 ? "999999999999" : cuit;
+                cliente.subc_cuit = cuit.Length > 13 ? "999999999999" : Utils.GetValueOrEmpty(cuit);
             }
             else if (Constants.ADDZ.Equals(key))
             {
-                cliente.subc_codigoPostal = data;
+                cliente.subc_codigoPostal = Utils.GetValueOrEmpty(data);
             }
             else if (Constants.ADD1.Equals(key))
             {
-                cliente.subc_domicilio = data;
+                cliente.subc_domicilio = Utils.GetValueOrEmpty(data);
             }
             else if (Constants.CTY1.Equals(key))
             {
-                cliente.subc_localidad = data;
+                cliente.subc_localidad = Utils.GetValueOrEmpty(data);
             }
         }
 

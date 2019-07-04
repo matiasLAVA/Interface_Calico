@@ -22,9 +22,9 @@ namespace Calico.interfaces.recepcionOR
                 dictionary.TryGetValue(pedidoDTO.F4201_DOCO, out recepcion);
                 if (recepcion == null)
                 {
-                    String tipo = FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_RECEPCION_OR + "." + Constants.TIPO, pedidoDTO.F4201_DCTO);
+                    
                     /* CABEZERA */
-                    recepcion = fillCabezera(pedidoDTO, emplazamiento, tipo);
+                    recepcion = fillCabezera(pedidoDTO, emplazamiento);
                     /* DETALLE */
                     tblRecepcionDetalle detalle = fillDetalle(pedidoDTO);
                     recepcion.tblRecepcionDetalle.Add(detalle);
@@ -39,7 +39,7 @@ namespace Calico.interfaces.recepcionOR
             }
         }
 
-        private tblRecepcion fillCabezera(PedidoDTO pedidoDTO, String emplazamiento,String tipo)
+        private tblRecepcion fillCabezera(PedidoDTO pedidoDTO, String emplazamiento)
         {
             tblRecepcion recepcion = new tblRecepcion();
             recepcion.recc_contacto = String.Empty;
@@ -48,7 +48,7 @@ namespace Calico.interfaces.recepcionOR
             recepcion.recc_motivoDevolucion = String.Empty;
             recepcion.recc_observaciones = String.Empty;
             recepcion.recc_emplazamiento = emplazamiento;
-            recepcion.recc_trec_codigo = tipo;
+            recepcion.recc_trec_codigo = pedidoDTO.F4201_DCTO;
             recepcion.recc_numero = pedidoDTO.F4201_DOCO;
 
             if (!String.IsNullOrWhiteSpace(pedidoDTO.F4201_OPDJ))
@@ -77,7 +77,7 @@ namespace Calico.interfaces.recepcionOR
             detalle.recd_linea = Convert.ToInt64(linea);
             detalle.recd_lineaPedido = 0;
             detalle.recd_lote = !String.IsNullOrWhiteSpace(pedidoDTO.F4211_LOTN) ? pedidoDTO.F4211_LOTN.Trim() : String.Empty;
-            detalle.recd_cantidad = !String.IsNullOrWhiteSpace(pedidoDTO.F4211_UORG) ? Convert.ToInt64(Convert.ToDouble(pedidoDTO.F4211_UORG)) : 0;
+            detalle.recd_cantidad = !String.IsNullOrWhiteSpace(pedidoDTO.F4211_UORG) ? Math.Abs(Convert.ToInt64(Convert.ToDouble(pedidoDTO.F4211_UORG))) : 0;
             detalle.recd_compania = !String.IsNullOrWhiteSpace(pedidoDTO.F4211_SRP1) ? pedidoDTO.F4211_SRP1.Trim() : String.Empty;
 
             if (!String.IsNullOrWhiteSpace(pedidoDTO.F4211_LITM) && pedidoDTO.F4211_LITM.Length > 15)

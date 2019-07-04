@@ -114,16 +114,10 @@ namespace Calico.interfaces.clientes
                 Console.WriteLine("Procesando cliente: " + entry.Value.subc_codigoCliente);
                 int sub_proc_id = serviceCliente.CallProcedure(tipoProceso, tipoMensaje);
                 entry.Value.subc_proc_id = sub_proc_id;
+                entry.Value.subc_codigo = "CODIGO";
+                entry.Value.subc_areaMuelle = "AREA";
+                entry.Value.subc_telefono = "TEL";
 
-                // VERY_HARDCODE
-                // Los pidio como valores obligatorios.
-                entry.Value.subc_iva = "21";
-                entry.Value.subc_codigo = codigoCliente.ToString();
-                entry.Value.subc_domicilio = "Peron 2579";
-                entry.Value.subc_localidad = "San Vicente";
-                entry.Value.subc_codigoPostal = "1642";
-                entry.Value.subc_areaMuelle = "Area17";
-                entry.Value.subc_telefono = "1512349876";
                 try
                 {
                     serviceCliente.Save(entry.Value);

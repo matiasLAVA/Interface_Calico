@@ -98,7 +98,7 @@ namespace Calico.interfaces.pedido
 
             if (pedidosDTO.Any())
             {
-                pedidoUtils.MappingPedidoDTOPedido(pedidosDTO, dictionary, emplazamiento, cliente);
+                pedidoUtils.MappingPedidoDTOPedido(pedidosDTO, dictionary, emplazamiento, cliente,false);
                 // Validamos si hay que insertar o descartar el pedido
                 foreach (KeyValuePair<string, tblPedido> entry in dictionary)
                 {
