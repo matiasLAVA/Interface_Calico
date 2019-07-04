@@ -55,6 +55,11 @@ namespace Calico.interfaces.clientes
             }
             lastTime = Utils.GetDateToProcess(dateTime, process.fecha_ultima);
 
+            if (DateTime.Now > lastTime)
+            {
+                lastTime = DateTime.Now;
+            }
+
             /* Convierto DateTime a String */
             String lastStringTime = Utils.ConvertDateTimeInString(lastTime);
 
