@@ -8,6 +8,7 @@ namespace InterfacesCalico
     {
         static void Main(string[] args)
         {
+
             // Validamos la existencia de argumentos
             String message = null;
             if (!Utils.ValidateArgs(args, out message))

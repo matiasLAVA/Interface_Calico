@@ -17,8 +17,14 @@ namespace Calico.common
         public const String TIPO = "Tipo";
         public const String TIPO_PROCESO = "tipoProceso";
         public const String ORDER_COMPANY = "OrderCompany";
+        public const String TIPO_ORDER = "tipoOrden";
+        public const String TIPO_PEDIDO = "tipoPedido";
+        public const String PARAM_TIPO_ORDER = "{tipoOrden}";
+        public const String FROM_STATUS = "fromStatus";
+        public const String TO_STATUS = "toStatus";
         // CLIENTES
         public const String INTERFACE_CLIENTES = "Clientes";
+        public const String ADD1ADD2ADD3 = "ADD";
         // RECEPCION
         public const String INTERFACE_RECEPCION = "Recepcion";
         public const String INTERFACE_RECEPCION_URL = "ReceptionURL";
@@ -33,26 +39,28 @@ namespace Calico.common
         public const String INTERFACE_ORDER_TYPE = "orderType_ST";
         // PEDIDOS
         public const String INTERFACE_PEDIDOS = "Pedidos";
-        public const String INTERFACE_PEDIDOS_TIPO_PEDIDO = "tipoPedido";
         public const String INTERFACE_PEDIDOS_LETRA = "Letra";
         public const String INTERFACE_PEDIDOS_URL = "PedidosURL";
         public const String INTERFACE_PEDIDOS_URL_POST = "PedidosURL_POST";
-		// INFORME PEDIDOS
+        public const String INTERFACE_PEDIDOS_AREA_MUELLE = "areaMuelle";
+        // INFORME PEDIDOS
         public const String INTERFACE_INFORME_PEDIDOS = "InformePedido";
         public const String INTERFACE_INFORME_PEDIDO_URL = "InformePedidoURL";
         public const String INTERFACE_INFORME_PEDIDO_LAST_STATUS = "laststatus";
         public const String INTERFACE_INFORME_PEDIDO_NEXT_STATUS = "nextstatus";
         public const String INTERFACE_INFORME_PEDIDO_P554211I_VERSION = "P554211I_Version";
-        public const String INTERFACE_PEDIDOS_FROM_STATUS = "fromStatus";
-        public const String INTERFACE_PEDIDOS_TO_STATUS = "toStatus";
         // ANULACION REMITO
         public const String INTERFACE_ANULACION_REMITO = "AnulacionRemito";
         public const String INTERFACE_ANULACION_REMITO_URL = "AnulacionRemitoURL";
+        // RECEPCION OR
+        public const String INTERFACE_RECEPCION_OR = "RecepcionOR";
+        public const String RECEPCION_OR_URL_POST = "RecepcionORURL";
 
         // JSON
         public const String JSON_PREFIX = "fs_DATABROWSE_";
         public const String JSON_SUBFIX_MLNM = "F0111";
         public const String JSON_SUBFIX_TAX = "F0101";
+        public const String JSON_SUBFIX_F0116 = "F0116";
         public const String JSON_SUBFIX_RECEPTION = "V554211";
         public const String JSON_SUBFIX_PEDIDO = "V554211";
         public const String JSON_TAG_DATA = "data";
@@ -75,6 +83,11 @@ namespace Calico.common
         public const String URLS = "URLs";
         public const String MLNM = "MLNM";
         public const String TAX = "TAX";
+        public const String ADDZ = "ADDZ";
+        public const String ADD1 = "ADD1";
+        public const String ADD2 = "ADD2";
+        public const String ADD3 = "ADD3";
+        public const String CTY1 = "CTY1";
         public const String USER = "user";
         public const String PASS = "pass";
         public const String BASIC_AUTH = "BasicAuth";

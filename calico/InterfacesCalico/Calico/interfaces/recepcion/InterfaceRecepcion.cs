@@ -56,6 +56,11 @@ namespace Calico.interfaces.recepcion
             }
             DateTime lastTime = Utils.GetDateToProcess(dateTime, process.fecha_ultima);
 
+            if (DateTime.Now.Date > lastTime)
+            {
+                lastTime = DateTime.Now.Date;
+            }
+
             /* Convierto DateTime a String formato YYYYMMDD */
             String lastStringTime = lastStringTime = Utils.ConvertDateTimeInString(lastTime);
 
@@ -72,12 +77,17 @@ namespace Calico.interfaces.recepcion
             String user = FilePropertyUtils.Instance.GetValueString(Constants.BASIC_AUTH, Constants.USER);
             String pass = FilePropertyUtils.Instance.GetValueString(Constants.BASIC_AUTH, Constants.PASS);
             Console.WriteLine("Usuario del Servicio Rest: " + user);
-            
+
             /* Obtenemos la URL del archivo */
             String url = FilePropertyUtils.Instance.GetValueString(INTERFACE + "." + Constants.URLS, Constants.INTERFACE_RECEPCION_URL);
 
             /* Armamos la URL con parametros */
-            urlPath = recepcionUtils.BuildUrl(url, lastStringTime);
+            String tipoOrden = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.TIPO_ORDER);
+            Dictionary<String, String> URLdictionary = new Dictionary<string, string>();
+            URLdictionary.Add(Constants.PARAM_FECHA, lastStringTime);
+            URLdictionary.Add(Constants.PARAM_TIPO_ORDER, tipoOrden);
+            urlPath = Utils.BuildUrl(url, URLdictionary);
+
             Console.WriteLine("URL: " + urlPath);
 
             /* Obtenemos los datos */
@@ -118,7 +128,6 @@ namespace Calico.interfaces.recepcion
             // Validamos si hay que insertar o descartar la recepcion
             foreach (KeyValuePair<string, tblRecepcion> entry in dictionary)
             {
-                entry.Value.recc_almacen = FilePropertyUtils.Instance.GetValueString(Constants.ALMACEN, entry.Value.recc_proveedor);
                 // ¿Ya está procesada?
                 if (serviceRecepcion.IsAlreadyProcess(entry.Value.recc_emplazamiento, entry.Value.recc_almacen, entry.Value.recc_trec_codigo, entry.Value.recc_numero))
                 {
@@ -138,7 +147,7 @@ namespace Calico.interfaces.recepcion
                         detalle.recd_proc_id = recc_proc_id;
                     }
                     // ¿La pude guardar?
-                    Console.WriteLine("Procesando recepcion: " + entry.Value.recc_numero);
+                    Console.WriteLine("Procesando recepcion nro. de OT: " + entry.Value.recc_numero);
                     if (serviceRecepcion.Save(entry.Value))
                         count++;
                     else

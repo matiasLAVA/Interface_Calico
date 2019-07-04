@@ -190,12 +190,11 @@ namespace Calico.common
         /// <returns>Retorna un String con la URL hidrata con parametros</returns>
         public static String BuildUrl(String urlParam, Dictionary<String, String> parameters)
         {
-            String url = String.Empty;
             foreach (KeyValuePair<string, string> entry in parameters)
             {
-                url = urlParam.Replace(entry.Key, entry.Value);
+                urlParam = urlParam.Replace(entry.Key, entry.Value);
             }
-            return url;
+            return urlParam;
         }
 
         public static void handleErrorRest(WebException e){

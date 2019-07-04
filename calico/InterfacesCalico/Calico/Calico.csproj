@@ -96,6 +96,8 @@
     <Compile Include="interfaces\pedidos\PedidoJson.cs" />
     <Compile Include="interfaces\pedidos\PedidoUtils.cs" />
     <Compile Include="interfaces\pedidos\PedidoDTO.cs" />
+    <Compile Include="interfaces\recepcionOR\InterfaceRecepcionOR.cs" />
+    <Compile Include="interfaces\recepcionOR\RecepcionORUtils.cs" />
     <Compile Include="interfaces\recepcion\ReceptionDTO.cs" />
     <Compile Include="persistencia\BIANCHI_PROCESS.cs">
       <DependentUpon>ModelCalico.tt</DependentUpon>

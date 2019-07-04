@@ -3,6 +3,7 @@ using Calico.interfaces.informePedido;
 using Calico.interfaces.informeRecepcion;
 using Calico.interfaces.pedido;
 using Calico.interfaces.recepcion;
+using Calico.interfaces.recepcionOR;
 using InterfacesCalico.generic;
 
 namespace Calico.common
@@ -37,6 +38,10 @@ namespace Calico.common
             else if (Constants.INTERFACE_ANULACION_REMITO.Equals(interfaceName))
             {
                 interfaz = new InterfaceAnulacionRemito();
+            }
+            else if (Constants.INTERFACE_RECEPCION_OR.Equals(interfaceName))
+            {
+                interfaz = new InterfaceRecepcionOR();
             }
             return interfaz;
         }

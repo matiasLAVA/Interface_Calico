@@ -37,19 +37,14 @@ namespace Calico.DAOs
 
         public bool Save(tblSubCliente obj)
         {
-            try
-            {
+
                 using (CalicoEntities context = new CalicoEntities())
                 {
                     context.tblSubCliente.Add(obj);
                     context.SaveChanges();
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return false;
-            }
+     
+
             return true;
         }
 

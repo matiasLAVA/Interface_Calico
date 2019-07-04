@@ -54,12 +54,16 @@ namespace Calico.interfaces.clientes
                 return false;
             }
             lastTime = Utils.GetDateToProcess(dateTime, process.fecha_ultima);
+            // Date.Value.Date
+            if (DateTime.Now.Date > lastTime)
+            {
+                lastTime = DateTime.Now.Date;
+            }
 
             /* Convierto DateTime a String */
-            String lastStringTime = lastStringTime = Utils.ConvertDateTimeInString(lastTime);
+            String lastStringTime = Utils.ConvertDateTimeInString(lastTime);
 
             /* Cargamos archivo con parametros propios para cada interface */
-            Console.WriteLine("Cargamos archivo de configuracion");
             Console.WriteLine("Cargamos archivo de configuracion");
             if (!FilePropertyUtils.Instance.ReadFile(Constants.PROPERTY_FILE_NAME))
             {
@@ -115,16 +119,10 @@ namespace Calico.interfaces.clientes
                 Console.WriteLine("Procesando cliente: " + entry.Value.subc_codigoCliente);
                 int sub_proc_id = serviceCliente.CallProcedure(tipoProceso, tipoMensaje);
                 entry.Value.subc_proc_id = sub_proc_id;
+                entry.Value.subc_codigo = "CODIGO";
+                entry.Value.subc_areaMuelle = "AREA";
+                entry.Value.subc_telefono = "TEL";
 
-                // VERY_HARDCODE
-                // Los pidio como valores obligatorios.
-                entry.Value.subc_iva = "21";
-                entry.Value.subc_codigo = codigoCliente.ToString();
-                entry.Value.subc_domicilio = "Peron 2579";
-                entry.Value.subc_localidad = "San Vicente";
-                entry.Value.subc_codigoPostal = "1642";
-                entry.Value.subc_areaMuelle = "Area17";
-                entry.Value.subc_telefono = "1512349876";
                 try
                 {
                     serviceCliente.Save(entry.Value);
@@ -155,6 +153,7 @@ namespace Calico.interfaces.clientes
             /* Agregamos datos faltantes de la tabla de procesos */
             Console.WriteLine("Preparamos la actualizamos de BIANCHI_PROCESS");
             process.fin = DateTime.Now;
+            process.fecha_ultima = lastTime;
             process.cant_lineas = count;
             process.estado = Constants.ESTADO_OK;
             Console.WriteLine("Fecha_fin: " + process.fin);

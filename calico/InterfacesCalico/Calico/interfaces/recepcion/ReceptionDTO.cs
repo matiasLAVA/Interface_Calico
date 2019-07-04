@@ -20,5 +20,7 @@ namespace Calico.interfaces.recepcion
         public string F4211_LITM { get; set; }
         public string F4108_MMEJ { get; set; }
         public string F4211_SRP1 { get; set; }
+        public string F4211_AN8 { get; set; }
+        public string F4211_RORN { get; set; }
     }
 }

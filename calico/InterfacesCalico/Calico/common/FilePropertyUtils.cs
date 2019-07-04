@@ -50,8 +50,16 @@ namespace Calico.common
             { 
                 if (source != null && !String.IsNullOrWhiteSpace(group) && !String.IsNullOrWhiteSpace(key))
                 {
-                    return source.Configs[group.Trim()].Get(key.Trim());
+                    if (source.Configs[group.Trim()].Get(key.Trim()) != null)
+                    {
+                        return source.Configs[group.Trim()].Get(key.Trim());
+                    }
+                    else
+                    {
+                        return String.Empty;
+                    }
                 }
+
                 return String.Empty;
             }
             catch (Exception ex)

@@ -15,17 +15,8 @@ namespace Calico.interfaces.clientes
         {
             String url = String.Empty;
             Dictionary<String, String> dictionary = new Dictionary<string, string>();
-            if (Constants.MLNM.Equals(key))
-            {
-                dictionary.Add(Constants.PARAM_FECHA, fecha);
-                url = Utils.BuildUrl(urlParam, dictionary);
-            }
-            else if (Constants.TAX.Equals(key))
-            {
-                dictionary.Add(Constants.PARAM_FECHA, fecha);
-                url = Utils.BuildUrl(urlParam, dictionary);
-            }
-
+            dictionary.Add(Constants.PARAM_FECHA, fecha);
+            url = Utils.BuildUrl(urlParam, dictionary);
             return url;
         }
 
@@ -41,7 +32,10 @@ namespace Calico.interfaces.clientes
             {
                 header = Constants.JSON_PREFIX + Constants.JSON_SUBFIX_TAX;
             }
-
+            else
+            {
+                header = Constants.JSON_PREFIX + Constants.JSON_SUBFIX_F0116;
+            }
             return header;
         }
 
@@ -68,10 +62,44 @@ namespace Calico.interfaces.clientes
                 String columnValue = Constants.JSON_SUBFIX_TAX + "_" + Constants.COLUMN_TAX;
                 SetValues(rowset, key, diccionary, columnId, columnValue);
             }
+            else if (Constants.ADDZ.Equals(key))
+            {
+                String columnId = Constants.JSON_SUBFIX_F0116 + "_" + Constants.COLUMN_AN8;
+                String columnValue = Constants.JSON_SUBFIX_F0116 + "_" + Constants.ADDZ;
+                SetValues(rowset, key, diccionary, columnId, columnValue);
+            }
+            else if (Constants.ADD1.Equals(key))
+            {
+                String columnId = Constants.JSON_SUBFIX_F0116 + "_" + Constants.COLUMN_AN8;
+                String columnValue = Constants.ADD1ADD2ADD3;
+                SetValues(rowset, key, diccionary, columnId, columnValue);
+            }
+            else if (Constants.CTY1.Equals(key))
+            {
+                String columnId = Constants.JSON_SUBFIX_F0116 + "_" + Constants.COLUMN_AN8;
+                String columnValue = Constants.JSON_SUBFIX_F0116 + "_" + Constants.CTY1;
+                SetValues(rowset, key, diccionary, columnId, columnValue);
+            }
         }
 
         private void SetValues(JToken rowset, String key, Dictionary<String, tblSubCliente> diccionary, String columnId, String columnValue)
         {
+            if (columnValue.Equals(Constants.ADD1ADD2ADD3))
+            {
+                String ADD1 = Constants.JSON_SUBFIX_F0116 + "_" + Constants.ADD1;
+                String ADD2 = Constants.JSON_SUBFIX_F0116 + "_" + Constants.ADD2;
+                String ADD3 = Constants.JSON_SUBFIX_F0116 + "_" + Constants.ADD3;
+                while (rowset.First != null)
+                {
+                    String id = rowset.First[columnId].ToString();
+                    String value1 = rowset.First[ADD1].ToString();
+                    String value2 = rowset.First[ADD2].ToString();
+                    String value3 = rowset.First[ADD3].ToString();
+                    String value = value1 + " " + value2 + " " + value3;
+                    AddDataToDictionary(diccionary, id, value, key);
+                    rowset.First.Remove();
+                }
+            }
             while (rowset.First != null)
             {
                 String id = rowset.First[columnId].ToString();
@@ -93,11 +121,24 @@ namespace Calico.interfaces.clientes
             }
             if (Constants.MLNM.Equals(key))
             {
-                cliente.subc_razonSocial = data;
+                cliente.subc_razonSocial = Utils.GetValueOrEmpty(data);
             }
             else if (Constants.TAX.Equals(key))
             {
-                cliente.subc_cuit = data;
+                String cuit = String.IsNullOrEmpty(data) ? String.Empty : data;
+                cliente.subc_cuit = cuit.Length > 13 ? "999999999999" : Utils.GetValueOrEmpty(cuit);
+            }
+            else if (Constants.ADDZ.Equals(key))
+            {
+                cliente.subc_codigoPostal = Utils.GetValueOrEmpty(data);
+            }
+            else if (Constants.ADD1.Equals(key))
+            {
+                cliente.subc_domicilio = Utils.GetValueOrEmpty(data);
+            }
+            else if (Constants.CTY1.Equals(key))
+            {
+                cliente.subc_localidad = Utils.GetValueOrEmpty(data);
             }
         }
 
