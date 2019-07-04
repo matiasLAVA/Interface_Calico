@@ -56,9 +56,9 @@ namespace Calico.interfaces.recepcion
             }
             DateTime lastTime = Utils.GetDateToProcess(dateTime, process.fecha_ultima);
 
-            if (DateTime.Now > lastTime)
+            if (DateTime.Now.Date > lastTime)
             {
-                lastTime = DateTime.Now;
+                lastTime = DateTime.Now.Date;
             }
 
             /* Convierto DateTime a String formato YYYYMMDD */
