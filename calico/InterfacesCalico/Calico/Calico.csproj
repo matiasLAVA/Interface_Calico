@@ -92,6 +92,7 @@
     <Compile Include="interfaces\informeRecepcion\InformeRecepcionJson.cs" />
     <Compile Include="interfaces\informeRecepcion\InformeRecepcionUtils.cs" />
     <Compile Include="interfaces\informeRecepcion\InterfaceInformeRecepcion.cs" />
+    <Compile Include="interfaces\items\InterfaceItems.cs" />
     <Compile Include="interfaces\pedidos\InterfacePedido.cs" />
     <Compile Include="interfaces\pedidos\PedidoJson.cs" />
     <Compile Include="interfaces\pedidos\PedidoUtils.cs" />
