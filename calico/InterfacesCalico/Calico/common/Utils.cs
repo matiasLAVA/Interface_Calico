@@ -55,6 +55,10 @@ namespace Calico.common
             if (dateArg == null)
             {
                 dateTime = Convert.ToDateTime(dateProcess);
+                if (DateTime.Now.Date > dateTime)
+                {
+                    dateTime = DateTime.Now.Date;
+                }
                 Console.WriteLine("Se procesará la interfaz con la fecha de BIANCHI_PROCESS: " + dateProcess);
             }
             else

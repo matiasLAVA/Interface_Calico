@@ -1,7 +1,6 @@
 ﻿using Calico.DAOs;
 using Calico.persistencia;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 
 namespace Calico.service

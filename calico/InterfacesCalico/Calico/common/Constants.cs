@@ -55,6 +55,9 @@ namespace Calico.common
         // RECEPCION OR
         public const String INTERFACE_RECEPCION_OR = "RecepcionOR";
         public const String RECEPCION_OR_URL_POST = "RecepcionORURL";
+        // ITEMS
+        public const String INTERFACE_ITEMS = "Items";
+        public const String ITEMS_URL = "ItemsURL";
 
         // JSON
         public const String JSON_PREFIX = "fs_DATABROWSE_";
@@ -63,6 +66,7 @@ namespace Calico.common
         public const String JSON_SUBFIX_F0116 = "F0116";
         public const String JSON_SUBFIX_RECEPTION = "V554211";
         public const String JSON_SUBFIX_PEDIDO = "V554211";
+        public const String JSON_SUBFIX_ITEM = "F4101";
         public const String JSON_TAG_DATA = "data";
         public const String JSON_TAG_GRIDDATA = "gridData";
         public const String JSON_TAG_ROWSET = "rowset";

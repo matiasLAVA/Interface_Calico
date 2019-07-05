@@ -1,8 +1,6 @@
 ﻿using Calico.common;
 using System;
-using Nini.Config;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.Entity.Validation;
 using InterfacesCalico.generic;
 using Calico.service;
@@ -12,6 +10,7 @@ namespace Calico.interfaces.clientes
 {
     public class InterfaceCliente : InterfaceGeneric
     {
+
         private const String INTERFACE = Constants.INTERFACE_CLIENTES;
 
         private BianchiService service = new BianchiService();
@@ -19,13 +18,11 @@ namespace Calico.interfaces.clientes
         private ClientesUtils clientesUtils = new ClientesUtils();
 
         public bool ValidateDate() => true;
-
         public bool Process(DateTime? dateTime)
         {
             Console.WriteLine("Comienzo del proceso para la interfaz " + INTERFACE);
-            DateTime lastTime;
-            BIANCHI_PROCESS process = service.FindByName(INTERFACE);
 
+            BIANCHI_PROCESS process = service.FindByName(INTERFACE);
             if (process == null)
             {
                 Console.WriteLine("No hay configuracion en BIANCHI_PROCESS para la interface: " + INTERFACE);
@@ -53,12 +50,7 @@ namespace Calico.interfaces.clientes
                 service.UnlockRow();
                 return false;
             }
-            lastTime = Utils.GetDateToProcess(dateTime, process.fecha_ultima);
-            // Date.Value.Date
-            if (DateTime.Now.Date > lastTime)
-            {
-                lastTime = DateTime.Now.Date;
-            }
+            DateTime lastTime = Utils.GetDateToProcess(dateTime, process.fecha_ultima);
 
             /* Convierto DateTime a String */
             String lastStringTime = Utils.ConvertDateTimeInString(lastTime);

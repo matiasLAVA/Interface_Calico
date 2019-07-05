@@ -1,15 +1,23 @@
 ﻿using Calico.common;
 using Calico.persistencia;
+using Calico.service;
+using InterfacesCalico.generic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Calico.interfaces.items
 {
-    class InterfaceItems
+    class InterfaceItems : InterfaceGeneric
     {
+
+        private const String INTERFACE = Constants.INTERFACE_ITEMS;
+
+        private BianchiService service = new BianchiService();
+        private TblProductoService serviceProducto = new TblProductoService();
+        private ItemUtils itemUtils = new ItemUtils();
+
+        public bool ValidateDate() => true;
         public bool Process(DateTime? dateTime)
         {
             Console.WriteLine("Comienzo del proceso para la interfaz " + INTERFACE);
@@ -48,11 +56,6 @@ namespace Calico.interfaces.items
             }
             DateTime lastTime = Utils.GetDateToProcess(dateTime, process.fecha_ultima);
 
-            if (DateTime.Now.Date > lastTime)
-            {
-                lastTime = DateTime.Now.Date;
-            }
-
             /* Convierto DateTime a String formato YYYYMMDD */
             String lastStringTime = lastStringTime = Utils.ConvertDateTimeInString(lastTime);
 
@@ -71,13 +74,11 @@ namespace Calico.interfaces.items
             Console.WriteLine("Usuario del Servicio Rest: " + user);
 
             /* Obtenemos la URL del archivo */
-            String url = FilePropertyUtils.Instance.GetValueString(INTERFACE + "." + Constants.URLS, Constants.INTERFACE_RECEPCION_URL);
+            String url = FilePropertyUtils.Instance.GetValueString(INTERFACE + "." + Constants.URLS, Constants.ITEMS_URL);
 
             /* Armamos la URL con parametros */
-            String tipoOrden = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.TIPO_ORDER);
             Dictionary<String, String> URLdictionary = new Dictionary<string, string>();
             URLdictionary.Add(Constants.PARAM_FECHA, lastStringTime);
-            URLdictionary.Add(Constants.PARAM_TIPO_ORDER, tipoOrden);
             urlPath = Utils.BuildUrl(url, URLdictionary);
 
             Console.WriteLine("URL: " + urlPath);
@@ -86,16 +87,15 @@ namespace Calico.interfaces.items
             String myJsonString = Utils.SendRequest(urlPath, user, pass);
 
             /* Mapping */
-            List<ReceptionDTO> receptionDTO = null;
-            Dictionary<String, tblRecepcion> dictionary = new Dictionary<string, tblRecepcion>();
-            String emplazamiento = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.EMPLAZAMIENTO);
+            List<ItemDTO> itemDTO = null;
+            Dictionary<String, tblProducto> dictionary = new Dictionary<string, tblProducto>();
 
             if (!String.Empty.Equals(myJsonString))
             {
-                receptionDTO = recepcionUtils.MappingJsonRecepcion(myJsonString);
-                if (receptionDTO.Any())
+                itemDTO = itemUtils.MappingJsonRecepcion(myJsonString);
+                if (itemDTO.Any())
                 {
-                    recepcionUtils.MappingReceptionDTORecepcion(receptionDTO, dictionary, emplazamiento);
+                    itemUtils.MappingReceptionDTORecepcion(itemDTO, dictionary);
                 }
                 else
                 {
@@ -118,33 +118,18 @@ namespace Calico.interfaces.items
             Console.WriteLine("Codigo de interface: " + tipoProceso);
 
             // Validamos si hay que insertar o descartar la recepcion
-            foreach (KeyValuePair<string, tblRecepcion> entry in dictionary)
+            foreach (KeyValuePair<string, tblProducto> entry in dictionary)
             {
-                // ¿Ya está procesada?
-                if (serviceRecepcion.IsAlreadyProcess(entry.Value.recc_emplazamiento, entry.Value.recc_almacen, entry.Value.recc_trec_codigo, entry.Value.recc_numero))
-                {
-                    Console.WriteLine("La recepcion " + entry.Value.recc_numero + " ya fue tratada, no se procesara");
-                    countAlreadyProcess++;
-                }
-                // No está procesada! la voy a guardar
-                else
-                {
-                    // LLamo al SP y seteo su valor a la cabecera y sus detalles
-                    int recc_proc_id = serviceRecepcion.CallProcedure(tipoProceso, tipoMensaje);
-                    entry.Value.recc_proc_id = recc_proc_id;
+                // LLamo al SP y seteo su valor a la cabecera y sus detalles
+                int prod_proc_id = serviceProducto.CallProcedure(tipoProceso, tipoMensaje);
+                entry.Value.prod_proc_id = prod_proc_id;
 
-                    foreach (tblRecepcionDetalle detalle in entry.Value.tblRecepcionDetalle)
-                    {
-                        detalle.recd_compania = FilePropertyUtils.Instance.GetValueString(INTERFACE + "." + Constants.COMPANIA, detalle.recd_compania);
-                        detalle.recd_proc_id = recc_proc_id;
-                    }
-                    // ¿La pude guardar?
-                    Console.WriteLine("Procesando recepcion nro. de OT: " + entry.Value.recc_numero);
-                    if (serviceRecepcion.Save(entry.Value))
-                        count++;
-                    else
-                        countError++;
-                }
+                Console.WriteLine("Procesando ITEM: " + entry.Value.prod_codigo);
+                if (serviceProducto.Save(entry.Value))
+                    count++;
+                else
+                    countError++;
+                
             }
 
             Console.WriteLine("Finalizó el proceso de actualización de Recepciones");
@@ -174,5 +159,6 @@ namespace Calico.interfaces.items
 
             return true;
         }
+
     }
 }

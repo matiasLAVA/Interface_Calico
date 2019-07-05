@@ -26,5 +26,6 @@ namespace Calico.persistencia
         public virtual tblPedido tblPedido { get; set; }
         public virtual tblRecepcion tblRecepcion { get; set; }
         public virtual tblSubCliente tblSubCliente { get; set; }
+        public virtual tblProducto tblProducto { get; set; }
     }
 }
