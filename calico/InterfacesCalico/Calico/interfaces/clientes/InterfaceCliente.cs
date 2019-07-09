@@ -111,9 +111,9 @@ namespace Calico.interfaces.clientes
                 Console.WriteLine("Procesando cliente: " + entry.Value.subc_codigoCliente);
                 int sub_proc_id = serviceCliente.CallProcedure(tipoProceso, tipoMensaje);
                 entry.Value.subc_proc_id = sub_proc_id;
-                entry.Value.subc_codigo = "CODIGO";
-                entry.Value.subc_areaMuelle = "AREA";
-                entry.Value.subc_telefono = "TEL";
+                entry.Value.subc_codigo = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.NUMERO_CLIENTE);
+                entry.Value.subc_areaMuelle = String.Empty;
+                entry.Value.subc_telefono = String.Empty;
 
                 try
                 {
