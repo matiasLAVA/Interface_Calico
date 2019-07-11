@@ -47,6 +47,11 @@ namespace Calico.interfaces.items
                 producto.prod_codigo = !String.IsNullOrWhiteSpace(item.F4101_LITM) ? item.F4101_LITM.Trim() : String.Empty;
                 producto.prod_descripcion = !String.IsNullOrWhiteSpace(item.F4101_DSC1) ? item.F4101_DSC1.Trim() : String.Empty;
                 producto.prod_descripcionFantasia = !String.IsNullOrWhiteSpace(item.F4101_DSC2) ? item.F4101_DSC2.Trim() : String.Empty;
+                producto.prod_unidadMedida = FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_ITEMS, Constants.UNIDAD_MEDIDA);
+                producto.prod_categoriaUbicacion = FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_ITEMS, Constants.CATEGORIA_UBICACION);
+                producto.prod_categoriaPicking = FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_ITEMS, Constants.CATEGORIA_PICKING);
+                producto.prod_categoriaReposicion = FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_ITEMS, Constants.CATEGORIA_REPOSICION);
+                producto.prod_categoriaEmbalaje = FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_ITEMS, Constants.CATEGORIA_EMBALAJE);
                 dictionary.Add(producto.prod_codigo, producto);
             }
         }

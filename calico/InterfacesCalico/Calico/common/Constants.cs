@@ -58,6 +58,11 @@ namespace Calico.common
         // ITEMS
         public const String INTERFACE_ITEMS = "Items";
         public const String ITEMS_URL = "ItemsURL";
+        public const String UNIDAD_MEDIDA = "UnidadMedida";
+        public const String CATEGORIA_UBICACION = "CategoriaUbicacion";
+        public const String CATEGORIA_PICKING = "CategoriaPicking";
+        public const String CATEGORIA_REPOSICION = "CategoriaReposicion";
+        public const String CATEGORIA_EMBALAJE = "CategoriaEmbalaje";
 
         // JSON
         public const String JSON_PREFIX = "fs_DATABROWSE_";

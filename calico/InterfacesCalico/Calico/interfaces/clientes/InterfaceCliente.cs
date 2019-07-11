@@ -145,7 +145,7 @@ namespace Calico.interfaces.clientes
             /* Agregamos datos faltantes de la tabla de procesos */
             Console.WriteLine("Preparamos la actualizamos de BIANCHI_PROCESS");
             process.fin = DateTime.Now;
-            process.fecha_ultima = lastTime;
+            process.fecha_ultima = DateTime.Now;
             process.cant_lineas = count;
             process.estado = Constants.ESTADO_OK;
             Console.WriteLine("Fecha_fin: " + process.fin);
