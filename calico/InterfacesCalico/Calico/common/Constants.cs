@@ -67,6 +67,7 @@ namespace Calico.common
         // JSON
         public const String JSON_PREFIX = "fs_DATABROWSE_";
         public const String JSON_SUBFIX_MLNM = "F0111";
+        public const String JSON_SUBFIX_ALPH = "F0101";
         public const String JSON_SUBFIX_TAX = "F0101";
         public const String JSON_SUBFIX_F0116 = "F0116";
         public const String JSON_SUBFIX_RECEPTION = "V554211";
@@ -90,7 +91,7 @@ namespace Calico.common
 
         // ARCHIVO CONFIGURACION EXTERNO
         public const String URLS = "URLs";
-        public const String MLNM = "MLNM";
+        public const String ALPH = "ALPH";
         public const String TAX = "TAX";
         public const String ADDZ = "ADDZ";
         public const String ADD1 = "ADD1";
@@ -112,7 +113,6 @@ namespace Calico.common
         public const String COLUMN_ALPH = "ALPH"; // Alpha Name
         public const String COLUMN_MCU = "MCU";   // Business Unit
         public const String COLUMN_AC01 = "AC01"; // Cat Code 1
-        public const String COLUMN_MLNM = "MLNM"; // RAZON SOCIAL 
 
         //ERRORES
         public const String NOT_DATA_FOUND = "No se recibieron datos del Rest Service";

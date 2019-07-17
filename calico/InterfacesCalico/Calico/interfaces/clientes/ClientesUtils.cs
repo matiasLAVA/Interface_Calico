@@ -24,9 +24,9 @@ namespace Calico.interfaces.clientes
         {
             String header = String.Empty;
 
-            if (Constants.MLNM.Equals(key))
+            if (Constants.ALPH.Equals(key))
             {
-                header = Constants.JSON_PREFIX + Constants.JSON_SUBFIX_MLNM;
+                header = Constants.JSON_PREFIX + Constants.JSON_SUBFIX_ALPH;
             }
             else if (Constants.TAX.Equals(key))
             {
@@ -50,10 +50,10 @@ namespace Calico.interfaces.clientes
             String AN8 = String.Empty;
             String value = String.Empty;
 
-            if (Constants.MLNM.Equals(key))
+            if (Constants.ALPH.Equals(key))
             {
-                String columnId = Constants.JSON_SUBFIX_MLNM + "_" + Constants.COLUMN_AN8;
-                String columnValue = Constants.JSON_SUBFIX_MLNM + "_" + Constants.COLUMN_MLNM;
+                String columnId = Constants.JSON_SUBFIX_ALPH + "_" + Constants.COLUMN_AN8;
+                String columnValue = Constants.JSON_SUBFIX_ALPH + "_" + Constants.COLUMN_ALPH;
                 SetValues(rowset, key, diccionary, columnId, columnValue);
             }
             else if (Constants.TAX.Equals(key))
@@ -119,7 +119,7 @@ namespace Calico.interfaces.clientes
                 cliente.subc_codigo = id;
                 dictionary.Add(id, cliente);
             }
-            if (Constants.MLNM.Equals(key))
+            if (Constants.ALPH.Equals(key))
             {
                 cliente.subc_razonSocial = Utils.GetValueOrEmpty(data);
             }
