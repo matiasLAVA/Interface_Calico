@@ -49,7 +49,7 @@ namespace Calico.DAOs
                 }
                 catch (DbUpdateException dbe)
                 {
-                    Console.WriteLine("Error insertando la pedido: " + dbe.Message);
+                    Console.WriteLine("Error insertando el pedido: " + dbe.Message);
                 }
                 catch (Exception ee)
                 {
@@ -62,17 +62,6 @@ namespace Calico.DAOs
         public void Update(tblPedido obj)
         {
             throw new NotImplementedException();
-        }
-
-        public int CountByFields(String emplaz, String alm, String cod, String numero)
-        {
-            //TODO:Completar logica
-            return 0;
-        }
-
-        public void examplePersist(String empl, String alm, String cod, String num, String compañia)
-        {
-            //TODO:HACER EJEMPLO
         }
 
         public bool IsAlreadyProcess(String alm, String tipo, String letra, String sucursal, decimal numero)

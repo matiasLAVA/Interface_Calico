@@ -4,22 +4,20 @@ using Calico.service;
 using InterfacesCalico.generic;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Core.Objects;
 using System.Linq;
 
-namespace Calico.interfaces.informePedido
+namespace Calico.interfaces.items
 {
-    class InterfaceInformePedido : InterfaceGeneric
+    class InterfaceItems : InterfaceGeneric
     {
 
-        private const String INTERFACE = Constants.INTERFACE_INFORME_PEDIDOS;
+        private const String INTERFACE = Constants.INTERFACE_ITEMS;
 
         private BianchiService service = new BianchiService();
-        private TblInformePedidoService serviceInformePedido = new TblInformePedidoService();
-        private InformePedidoUtils informePedidoUtils = new InformePedidoUtils();
+        private TblProductoService serviceProducto = new TblProductoService();
+        private ItemUtils itemUtils = new ItemUtils();
 
-        public bool ValidateDate() => false;
-
+        public bool ValidateDate() => true;
         public bool Process(DateTime? dateTime)
         {
             Console.WriteLine("Comienzo del proceso para la interfaz " + INTERFACE);
@@ -50,6 +48,17 @@ namespace Calico.interfaces.informePedido
                 return false;
             }
 
+            /* Obtenemos la fecha */
+            if (Utils.IsInvalidateDates(dateTime, process.fecha_ultima))
+            {
+                service.finishProcessByError(process, Constants.FAILED_LOAD_DATES, INTERFACE);
+                return false;
+            }
+            DateTime lastTime = Utils.GetDateToProcess(dateTime, process.fecha_ultima);
+
+            /* Convierto DateTime a String formato YYYYMMDD */
+            String lastStringTime = lastStringTime = Utils.ConvertDateTimeInString(lastTime);
+
             /* Cargamos archivo con parametros propios para cada interface */
             Console.WriteLine("Cargamos archivo de configuracion");
             if (!FilePropertyUtils.Instance.ReadFile(Constants.PROPERTY_FILE_NAME))
@@ -58,20 +67,6 @@ namespace Calico.interfaces.informePedido
                 return false;
             }
 
-            // INICIO BUSQUEDA DE DATOS
-            String emplazamiento = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.EMPLAZAMIENTO);
-            String orderCompany = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.ORDER_COMPANY);
-            String lastStatus = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.INTERFACE_INFORME_PEDIDO_LAST_STATUS);
-            String nextStatus = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.INTERFACE_INFORME_PEDIDO_NEXT_STATUS);
-            String version = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.INTERFACE_INFORME_PEDIDO_P554211I_VERSION);
-            int tipoProceso = FilePropertyUtils.Instance.GetValueInt(INTERFACE, Constants.TIPO_PROCESO);
-
-            var almacenes = FilePropertyUtils.Instance.GetValueArrayString(INTERFACE + "." + Constants.ALMACEN);
-            var tipos = FilePropertyUtils.Instance.GetValueArrayString(INTERFACE + "." + Constants.TIPO);
-
-            List<tblInformePedido> informes = serviceInformePedido.FindInformes(emplazamiento, almacenes, tipos, tipoProceso);
-            List<InformePedidoJson> jsonList = null;
-
             /* Obtenemos usuario y contraseña del archivo para el servicio Rest */
             String urlPath = String.Empty;
             String user = FilePropertyUtils.Instance.GetValueString(Constants.BASIC_AUTH, Constants.USER);
@@ -79,53 +74,62 @@ namespace Calico.interfaces.informePedido
             Console.WriteLine("Usuario del Servicio Rest: " + user);
 
             /* Obtenemos la URL del archivo */
-            String url = FilePropertyUtils.Instance.GetValueString(INTERFACE + "." + Constants.URLS, Constants.INTERFACE_INFORME_PEDIDO_URL);
+            String url = FilePropertyUtils.Instance.GetValueString(INTERFACE + "." + Constants.URLS, Constants.ITEMS_URL);
 
-            int count = 0;
-            int countError = 0;
-            Boolean callArchivar;
+            /* Armamos la URL con parametros */
+            Dictionary<String, String> URLdictionary = new Dictionary<string, string>();
+            URLdictionary.Add(Constants.PARAM_FECHA, lastStringTime);
+            urlPath = Utils.BuildUrl(url, URLdictionary);
 
-            foreach (tblInformePedido informe in informes)
+            Console.WriteLine("URL: " + urlPath);
+
+            /* Obtenemos los datos */
+            String myJsonString = Utils.SendRequest(urlPath, user, pass);
+
+            /* Mapping */
+            List<ItemDTO> itemDTO = null;
+            Dictionary<String, tblProducto> dictionary = new Dictionary<string, tblProducto>();
+
+            if (!String.Empty.Equals(myJsonString))
             {
-                callArchivar = true;
-                String orderType = FilePropertyUtils.Instance.GetValueString(INTERFACE + "." + Constants.INTERFACE_PEDIDOS_LETRA, informe.ipec_letra);
-                jsonList = informePedidoUtils.MappingInforme(informe, orderCompany, orderType, lastStatus, nextStatus, version);
-
-                if (jsonList.Any())
+                itemDTO = itemUtils.MappingJsonRecepcion(myJsonString);
+                if (itemDTO.Any())
                 {
-                    Console.WriteLine("Se llevara a cabo el envio al servicio REST de los detalles de la cabecera: " + informe.ipec_proc_id);
-                    foreach (InformePedidoJson json in jsonList)
-                    {
-                        var jsonString = informePedidoUtils.JsonToString(json);
-                        Console.WriteLine("Se enviara el siguiente Json al servicio REST: ");
-                        Console.WriteLine(jsonString);
-                        /* Send request */
-                        if (!(informePedidoUtils.SendRequestPost(url, user, pass, jsonString)))
-                        {
-                            Console.WriteLine("Se llamara al procedure para informar el error");
-                            serviceInformePedido.CallProcedureInformarEjecucion(informe.ipec_proc_id, InformePedidoUtils.LAST_ERROR, new ObjectParameter("error", typeof(String)));
-                            callArchivar = false;
-                            countError++;
-                        }
-                        else
-                        {
-                            Console.WriteLine("El servicio REST retorno OK: " + jsonString);
-                            count++;
-                        }
-                    }
-
-                    if (callArchivar)
-                    {
-                        Console.WriteLine("Se llamara al procedure para archivar el informe");
-                        serviceInformePedido.CallProcedureArchivarInformePedido(informe.ipec_proc_id, new ObjectParameter("error", typeof(String)));
-                    }
-
+                    itemUtils.MappingReceptionDTORecepcion(itemDTO, dictionary);
                 }
                 else
                 {
-                    Console.WriteLine("No se encontraron detalles para la cabecera: " + informe.ipec_proc_id);
+                    service.finishProcessByError(process, Constants.NOT_DATA_FOUND, INTERFACE);
+                    return false;
                 }
+            }
+            else
+            {
+                service.finishProcessByError(process, Constants.FAILED_CALL_REST, INTERFACE);
+                return false;
+            }
 
+            int count = 0;
+            int countError = 0;
+            int countAlreadyProcess = 0;
+            int? tipoMensaje = 0;
+            int tipoProceso = FilePropertyUtils.Instance.GetValueInt(INTERFACE, Constants.NUMERO_INTERFACE);
+            int codigoCliente = FilePropertyUtils.Instance.GetValueInt(INTERFACE, Constants.NUMERO_CLIENTE);
+            Console.WriteLine("Codigo de interface: " + tipoProceso);
+
+            // Validamos si hay que insertar o descartar la recepcion
+            foreach (KeyValuePair<string, tblProducto> entry in dictionary)
+            {
+                // LLamo al SP y seteo su valor a la cabecera y sus detalles
+                int prod_proc_id = serviceProducto.CallProcedure(tipoProceso, tipoMensaje);
+                entry.Value.prod_proc_id = prod_proc_id;
+
+                Console.WriteLine("Procesando ITEM: " + entry.Value.prod_codigo);
+                if (serviceProducto.Save(entry.Value))
+                    count++;
+                else
+                    countError++;
+                
             }
 
             Console.WriteLine("Finalizó el proceso de actualización de Recepciones");
@@ -139,6 +143,7 @@ namespace Calico.interfaces.informePedido
             Console.WriteLine("Fecha_fin: " + process.fin);
             Console.WriteLine("Cantidad de Recepciones procesadas OK: " + process.cant_lineas);
             Console.WriteLine("Cantidad de Recepciones procesadas con ERROR: " + countError);
+            Console.WriteLine("Cantidad de Recepciones evitadas: " + countAlreadyProcess);
             Console.WriteLine("Estado: " + process.estado);
 
             /* Actualizamos la tabla BIANCHI_PROCESS */
@@ -153,8 +158,6 @@ namespace Calico.interfaces.informePedido
             Console.WriteLine("Proceso Finalizado correctamente");
 
             return true;
-
-
         }
 
     }

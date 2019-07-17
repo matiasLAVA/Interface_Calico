@@ -1,6 +1,7 @@
 ﻿using Calico.interfaces.clientes;
 using Calico.interfaces.informePedido;
 using Calico.interfaces.informeRecepcion;
+using Calico.interfaces.items;
 using Calico.interfaces.pedido;
 using Calico.interfaces.recepcion;
 using Calico.interfaces.recepcionOR;
@@ -42,6 +43,10 @@ namespace Calico.common
             else if (Constants.INTERFACE_RECEPCION_OR.Equals(interfaceName))
             {
                 interfaz = new InterfaceRecepcionOR();
+            }
+            else if (Constants.INTERFACE_ITEMS.Equals(interfaceName))
+            {
+                interfaz = new InterfaceItems();
             }
             return interfaz;
         }

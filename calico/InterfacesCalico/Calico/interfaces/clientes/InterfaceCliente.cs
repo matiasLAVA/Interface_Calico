@@ -1,8 +1,6 @@
 ﻿using Calico.common;
 using System;
-using Nini.Config;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.Entity.Validation;
 using InterfacesCalico.generic;
 using Calico.service;
@@ -12,6 +10,7 @@ namespace Calico.interfaces.clientes
 {
     public class InterfaceCliente : InterfaceGeneric
     {
+
         private const String INTERFACE = Constants.INTERFACE_CLIENTES;
 
         private BianchiService service = new BianchiService();
@@ -19,13 +18,11 @@ namespace Calico.interfaces.clientes
         private ClientesUtils clientesUtils = new ClientesUtils();
 
         public bool ValidateDate() => true;
-
         public bool Process(DateTime? dateTime)
         {
             Console.WriteLine("Comienzo del proceso para la interfaz " + INTERFACE);
-            DateTime lastTime;
-            BIANCHI_PROCESS process = service.FindByName(INTERFACE);
 
+            BIANCHI_PROCESS process = service.FindByName(INTERFACE);
             if (process == null)
             {
                 Console.WriteLine("No hay configuracion en BIANCHI_PROCESS para la interface: " + INTERFACE);
@@ -53,12 +50,7 @@ namespace Calico.interfaces.clientes
                 service.UnlockRow();
                 return false;
             }
-            lastTime = Utils.GetDateToProcess(dateTime, process.fecha_ultima);
-            // Date.Value.Date
-            if (DateTime.Now.Date > lastTime)
-            {
-                lastTime = DateTime.Now.Date;
-            }
+            DateTime lastTime = Utils.GetDateToProcess(dateTime, process.fecha_ultima);
 
             /* Convierto DateTime a String */
             String lastStringTime = Utils.ConvertDateTimeInString(lastTime);
@@ -119,9 +111,9 @@ namespace Calico.interfaces.clientes
                 Console.WriteLine("Procesando cliente: " + entry.Value.subc_codigoCliente);
                 int sub_proc_id = serviceCliente.CallProcedure(tipoProceso, tipoMensaje);
                 entry.Value.subc_proc_id = sub_proc_id;
-                entry.Value.subc_codigo = "CODIGO";
-                entry.Value.subc_areaMuelle = "AREA";
-                entry.Value.subc_telefono = "TEL";
+                entry.Value.subc_codigo = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.NUMERO_CLIENTE);
+                entry.Value.subc_areaMuelle = String.Empty;
+                entry.Value.subc_telefono = String.Empty;
 
                 try
                 {
@@ -153,7 +145,7 @@ namespace Calico.interfaces.clientes
             /* Agregamos datos faltantes de la tabla de procesos */
             Console.WriteLine("Preparamos la actualizamos de BIANCHI_PROCESS");
             process.fin = DateTime.Now;
-            process.fecha_ultima = lastTime;
+            process.fecha_ultima = DateTime.Now;
             process.cant_lineas = count;
             process.estado = Constants.ESTADO_OK;
             Console.WriteLine("Fecha_fin: " + process.fin);

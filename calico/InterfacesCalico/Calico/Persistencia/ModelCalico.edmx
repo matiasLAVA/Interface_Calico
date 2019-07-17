@@ -219,6 +219,48 @@
           <Property Name="proc_tipoMensaje" Type="int" Nullable="false" />
           <Property Name="proc_identificador" Type="varchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="tblProducto">
+          <Key>
+            <PropertyRef Name="prod_proc_id" />
+          </Key>
+          <Property Name="prod_proc_id" Type="int" Nullable="false" />
+          <Property Name="prod_compania" Type="char" MaxLength="3" />
+          <Property Name="prod_codigo" Type="char" MaxLength="15" />
+          <Property Name="prod_codigoBarras" Type="char" MaxLength="14" />
+          <Property Name="prod_descripcion" Type="char" MaxLength="100" />
+          <Property Name="prod_descripcionFantasia" Type="char" MaxLength="180" />
+          <Property Name="prod_clase" Type="char" MaxLength="1" />
+          <Property Name="prod_unidadMedida" Type="char" MaxLength="2" />
+          <Property Name="prod_cantidadPorUnidadVenta" Type="numeric" Precision="8" Scale="2" Nullable="false" />
+          <Property Name="prod_cantidadPorCaja" Type="numeric" Precision="8" Scale="2" Nullable="false" />
+          <Property Name="prod_cantidadPorPallet" Type="numeric" Precision="8" Scale="2" Nullable="false" />
+          <Property Name="prod_pesoUnidad" Type="numeric" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="prod_pesoCaja" Type="numeric" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="prod_pesoPallet" Type="numeric" Precision="10" Scale="3" Nullable="false" />
+          <Property Name="prod_altoUnidad" Type="numeric" Precision="7" Scale="3" Nullable="false" />
+          <Property Name="prod_altoCaja" Type="numeric" Precision="7" Scale="3" Nullable="false" />
+          <Property Name="prod_altoPallet" Type="numeric" Precision="7" Scale="3" Nullable="false" />
+          <Property Name="prod_anchoUnidad" Type="numeric" Precision="7" Scale="3" Nullable="false" />
+          <Property Name="prod_anchoCaja" Type="numeric" Precision="7" Scale="3" Nullable="false" />
+          <Property Name="prod_anchoPallet" Type="numeric" Precision="7" Scale="3" Nullable="false" />
+          <Property Name="prod_largoUnidad" Type="numeric" Precision="7" Scale="3" Nullable="false" />
+          <Property Name="prod_largoCaja" Type="numeric" Precision="7" Scale="3" Nullable="false" />
+          <Property Name="prod_largoPallet" Type="numeric" Precision="7" Scale="3" Nullable="false" />
+          <Property Name="prod_categoriaUbicacion" Type="char" MaxLength="3" />
+          <Property Name="prod_categoriaPicking" Type="char" MaxLength="3" />
+          <Property Name="prod_categoriaReposicion" Type="char" MaxLength="3" />
+          <Property Name="prod_categoriaEmbalaje" Type="char" MaxLength="3" />
+          <Property Name="prod_rubro" Type="char" MaxLength="6" />
+          <Property Name="prod_subRubro" Type="char" MaxLength="6" />
+          <Property Name="prod_referenciaA" Type="varchar" MaxLength="60" />
+          <Property Name="prod_referenciaB" Type="varchar" MaxLength="60" />
+          <Property Name="prod_manejaLote" Type="bit" Nullable="false" />
+          <Property Name="prod_manejaSerie" Type="bit" Nullable="false" />
+          <Property Name="prod_precioCosto" Type="numeric" Precision="12" Scale="4" Nullable="false" />
+          <Property Name="prod_precioVenta" Type="numeric" Precision="12" Scale="4" Nullable="false" />
+          <Property Name="prod_diasVencimiento" Type="numeric" Precision="8" Scale="0" Nullable="false" />
+          <Property Name="prod_esProductoPadre" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="tblRecepcion">
           <Key>
             <PropertyRef Name="recc_proc_id" />
@@ -345,6 +387,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tblProducto_tblProceso">
+          <End Role="tblProceso" Type="Self.tblProceso" Multiplicity="1" />
+          <End Role="tblProducto" Type="Self.tblProducto" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="tblProceso">
+              <PropertyRef Name="proc_id" />
+            </Principal>
+            <Dependent Role="tblProducto">
+              <PropertyRef Name="prod_proc_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_tblRecepcion_tblProceso">
           <End Role="tblProceso" Type="Self.tblProceso" Multiplicity="1" />
           <End Role="tblRecepcion" Type="Self.tblRecepcion" Multiplicity="0..1" />
@@ -381,10 +435,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="INTERFAZ_ArchivarInformePedido" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="id" Type="int" Mode="In" />
-          <Parameter Name="error" Type="varchar(max)" Mode="InOut" />
-        </Function>
         <Function Name="INTERFAZ_ArchivarInformeRecepcion" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="int" Mode="In" />
           <Parameter Name="error" Type="varchar(max)" Mode="InOut" />
@@ -409,6 +459,7 @@
           <EntitySet Name="tblPedido" EntityType="Self.tblPedido" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblPedidoDetalle" EntityType="Self.tblPedidoDetalle" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblProceso" EntityType="Self.tblProceso" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tblProducto" EntityType="Self.tblProducto" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblRecepcion" EntityType="Self.tblRecepcion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblRecepcionDetalle" EntityType="Self.tblRecepcionDetalle" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblSubCliente" EntityType="Self.tblSubCliente" Schema="dbo" store:Type="Tables" />
@@ -435,6 +486,10 @@
           <AssociationSet Name="FK_tblPedidoDetalle_tblPedido" Association="Self.FK_tblPedidoDetalle_tblPedido">
             <End Role="tblPedido" EntitySet="tblPedido" />
             <End Role="tblPedidoDetalle" EntitySet="tblPedidoDetalle" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tblProducto_tblProceso" Association="Self.FK_tblProducto_tblProceso">
+            <End Role="tblProceso" EntitySet="tblProceso" />
+            <End Role="tblProducto" EntitySet="tblProducto" />
           </AssociationSet>
           <AssociationSet Name="FK_tblRecepcion_tblProceso" Association="Self.FK_tblRecepcion_tblProceso">
             <End Role="tblProceso" EntitySet="tblProceso" />
@@ -554,6 +609,11 @@
             <Parameter Name="id" Mode="In" Type="Int32" />
             <Parameter Name="error" Mode="InOut" Type="String" />
           </FunctionImport>
+          <EntitySet Name="tblProducto" EntityType="CalicoModel.tblProducto" />
+          <AssociationSet Name="FK_tblProducto_tblProceso" Association="CalicoModel.FK_tblProducto_tblProceso">
+            <End Role="tblProceso" EntitySet="tblProceso" />
+            <End Role="tblProducto" EntitySet="tblProducto" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="tblRecepcion">
           <Key>
@@ -854,6 +914,7 @@
           <NavigationProperty Name="tblPedido" Relationship="CalicoModel.FK_tblPedido_tblProceso" FromRole="tblProceso" ToRole="tblPedido" />
           <NavigationProperty Name="tblRecepcion" Relationship="CalicoModel.FK_tblRecepcion_tblProceso" FromRole="tblProceso" ToRole="tblRecepcion" />
           <NavigationProperty Name="tblSubCliente" Relationship="CalicoModel.FK_tblSubCliente_tblProceso" FromRole="tblProceso" ToRole="tblSubCliente" />
+          <NavigationProperty Name="tblProducto" Relationship="CalicoModel.FK_tblProducto_tblProceso" FromRole="tblProceso" ToRole="tblProducto" />
         </EntityType>
         <Association Name="FK_tblInformePedido_tblProceso">
           <End Type="CalicoModel.tblProceso" Role="tblProceso" Multiplicity="1" />
@@ -912,6 +973,61 @@
             </Principal>
             <Dependent Role="tblSubCliente">
               <PropertyRef Name="subc_proc_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tblProducto">
+          <Key>
+            <PropertyRef Name="prod_proc_id" />
+          </Key>
+          <Property Name="prod_proc_id" Type="Int32" Nullable="false" />
+          <Property Name="prod_compania" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="prod_codigo" Type="String" MaxLength="15" FixedLength="true" Unicode="false" />
+          <Property Name="prod_codigoBarras" Type="String" MaxLength="14" FixedLength="true" Unicode="false" />
+          <Property Name="prod_descripcion" Type="String" MaxLength="100" FixedLength="true" Unicode="false" />
+          <Property Name="prod_descripcionFantasia" Type="String" MaxLength="180" FixedLength="true" Unicode="false" />
+          <Property Name="prod_clase" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="prod_unidadMedida" Type="String" MaxLength="2" FixedLength="true" Unicode="false" />
+          <Property Name="prod_cantidadPorUnidadVenta" Type="Decimal" Nullable="false" Precision="8" Scale="2" />
+          <Property Name="prod_cantidadPorCaja" Type="Decimal" Nullable="false" Precision="8" Scale="2" />
+          <Property Name="prod_cantidadPorPallet" Type="Decimal" Nullable="false" Precision="8" Scale="2" />
+          <Property Name="prod_pesoUnidad" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
+          <Property Name="prod_pesoCaja" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
+          <Property Name="prod_pesoPallet" Type="Decimal" Nullable="false" Precision="10" Scale="3" />
+          <Property Name="prod_altoUnidad" Type="Decimal" Nullable="false" Precision="7" Scale="3" />
+          <Property Name="prod_altoCaja" Type="Decimal" Nullable="false" Precision="7" Scale="3" />
+          <Property Name="prod_altoPallet" Type="Decimal" Nullable="false" Precision="7" Scale="3" />
+          <Property Name="prod_anchoUnidad" Type="Decimal" Nullable="false" Precision="7" Scale="3" />
+          <Property Name="prod_anchoCaja" Type="Decimal" Nullable="false" Precision="7" Scale="3" />
+          <Property Name="prod_anchoPallet" Type="Decimal" Nullable="false" Precision="7" Scale="3" />
+          <Property Name="prod_largoUnidad" Type="Decimal" Nullable="false" Precision="7" Scale="3" />
+          <Property Name="prod_largoCaja" Type="Decimal" Nullable="false" Precision="7" Scale="3" />
+          <Property Name="prod_largoPallet" Type="Decimal" Nullable="false" Precision="7" Scale="3" />
+          <Property Name="prod_categoriaUbicacion" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="prod_categoriaPicking" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="prod_categoriaReposicion" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="prod_categoriaEmbalaje" Type="String" MaxLength="3" FixedLength="true" Unicode="false" />
+          <Property Name="prod_rubro" Type="String" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="prod_subRubro" Type="String" MaxLength="6" FixedLength="true" Unicode="false" />
+          <Property Name="prod_referenciaA" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="prod_referenciaB" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="prod_manejaLote" Type="Boolean" Nullable="false" />
+          <Property Name="prod_manejaSerie" Type="Boolean" Nullable="false" />
+          <Property Name="prod_precioCosto" Type="Decimal" Nullable="false" Precision="12" Scale="4" />
+          <Property Name="prod_precioVenta" Type="Decimal" Nullable="false" Precision="12" Scale="4" />
+          <Property Name="prod_diasVencimiento" Type="Decimal" Nullable="false" Precision="8" Scale="0" />
+          <Property Name="prod_esProductoPadre" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tblProceso" Relationship="CalicoModel.FK_tblProducto_tblProceso" FromRole="tblProducto" ToRole="tblProceso" />
+        </EntityType>
+        <Association Name="FK_tblProducto_tblProceso">
+          <End Type="CalicoModel.tblProceso" Role="tblProceso" Multiplicity="1" />
+          <End Type="CalicoModel.tblProducto" Role="tblProducto" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="tblProceso">
+              <PropertyRef Name="proc_id" />
+            </Principal>
+            <Dependent Role="tblProducto">
+              <PropertyRef Name="prod_proc_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1205,7 +1321,49 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="INTERFAZ_ArchivarInformePedido" FunctionName="CalicoModel.Store.INTERFAZ_ArchivarInformePedido" />
+          <EntitySetMapping Name="tblProducto">
+            <EntityTypeMapping TypeName="CalicoModel.tblProducto">
+              <MappingFragment StoreEntitySet="tblProducto">
+                <ScalarProperty Name="prod_esProductoPadre" ColumnName="prod_esProductoPadre" />
+                <ScalarProperty Name="prod_diasVencimiento" ColumnName="prod_diasVencimiento" />
+                <ScalarProperty Name="prod_precioVenta" ColumnName="prod_precioVenta" />
+                <ScalarProperty Name="prod_precioCosto" ColumnName="prod_precioCosto" />
+                <ScalarProperty Name="prod_manejaSerie" ColumnName="prod_manejaSerie" />
+                <ScalarProperty Name="prod_manejaLote" ColumnName="prod_manejaLote" />
+                <ScalarProperty Name="prod_referenciaB" ColumnName="prod_referenciaB" />
+                <ScalarProperty Name="prod_referenciaA" ColumnName="prod_referenciaA" />
+                <ScalarProperty Name="prod_subRubro" ColumnName="prod_subRubro" />
+                <ScalarProperty Name="prod_rubro" ColumnName="prod_rubro" />
+                <ScalarProperty Name="prod_categoriaEmbalaje" ColumnName="prod_categoriaEmbalaje" />
+                <ScalarProperty Name="prod_categoriaReposicion" ColumnName="prod_categoriaReposicion" />
+                <ScalarProperty Name="prod_categoriaPicking" ColumnName="prod_categoriaPicking" />
+                <ScalarProperty Name="prod_categoriaUbicacion" ColumnName="prod_categoriaUbicacion" />
+                <ScalarProperty Name="prod_largoPallet" ColumnName="prod_largoPallet" />
+                <ScalarProperty Name="prod_largoCaja" ColumnName="prod_largoCaja" />
+                <ScalarProperty Name="prod_largoUnidad" ColumnName="prod_largoUnidad" />
+                <ScalarProperty Name="prod_anchoPallet" ColumnName="prod_anchoPallet" />
+                <ScalarProperty Name="prod_anchoCaja" ColumnName="prod_anchoCaja" />
+                <ScalarProperty Name="prod_anchoUnidad" ColumnName="prod_anchoUnidad" />
+                <ScalarProperty Name="prod_altoPallet" ColumnName="prod_altoPallet" />
+                <ScalarProperty Name="prod_altoCaja" ColumnName="prod_altoCaja" />
+                <ScalarProperty Name="prod_altoUnidad" ColumnName="prod_altoUnidad" />
+                <ScalarProperty Name="prod_pesoPallet" ColumnName="prod_pesoPallet" />
+                <ScalarProperty Name="prod_pesoCaja" ColumnName="prod_pesoCaja" />
+                <ScalarProperty Name="prod_pesoUnidad" ColumnName="prod_pesoUnidad" />
+                <ScalarProperty Name="prod_cantidadPorPallet" ColumnName="prod_cantidadPorPallet" />
+                <ScalarProperty Name="prod_cantidadPorCaja" ColumnName="prod_cantidadPorCaja" />
+                <ScalarProperty Name="prod_cantidadPorUnidadVenta" ColumnName="prod_cantidadPorUnidadVenta" />
+                <ScalarProperty Name="prod_unidadMedida" ColumnName="prod_unidadMedida" />
+                <ScalarProperty Name="prod_clase" ColumnName="prod_clase" />
+                <ScalarProperty Name="prod_descripcionFantasia" ColumnName="prod_descripcionFantasia" />
+                <ScalarProperty Name="prod_descripcion" ColumnName="prod_descripcion" />
+                <ScalarProperty Name="prod_codigoBarras" ColumnName="prod_codigoBarras" />
+                <ScalarProperty Name="prod_codigo" ColumnName="prod_codigo" />
+                <ScalarProperty Name="prod_compania" ColumnName="prod_compania" />
+                <ScalarProperty Name="prod_proc_id" ColumnName="prod_proc_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

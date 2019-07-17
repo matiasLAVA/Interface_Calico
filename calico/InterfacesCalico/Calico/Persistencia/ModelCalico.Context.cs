@@ -42,6 +42,7 @@ namespace Calico.persistencia
         public virtual DbSet<tblInformePedido> tblInformePedido { get; set; }
         public virtual DbSet<tblInformePedidoDetalle> tblInformePedidoDetalle { get; set; }
         public virtual DbSet<tblProceso> tblProceso { get; set; }
+        public virtual DbSet<tblProducto> tblProducto { get; set; }
 
         public virtual int INTERFAZ_CrearProceso(Nullable<int> tipoProceso, Nullable<int> tipoMensaje)
         {

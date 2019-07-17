@@ -55,6 +55,10 @@ namespace Calico.common
             if (dateArg == null)
             {
                 dateTime = Convert.ToDateTime(dateProcess);
+                if (DateTime.Now.Date > dateTime)
+                {
+                    dateTime = DateTime.Now.Date;
+                }
                 Console.WriteLine("Se procesará la interfaz con la fecha de BIANCHI_PROCESS: " + dateProcess);
             }
             else
@@ -218,6 +222,7 @@ namespace Calico.common
         {
             String myJsonString = String.Empty;
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
+            request.Proxy = null;  //05/07/2019 
             String encoded = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(user + ":" + pass));
             request.Headers.Add("Authorization", "Basic " + encoded);
             request.Method = Constants.METHOD_GET;

@@ -27,6 +27,8 @@
         <AssociationConnector Association="CalicoModel.FK_tblPedido_tblProceso" />
         <AssociationConnector Association="CalicoModel.FK_tblRecepcion_tblProceso" />
         <AssociationConnector Association="CalicoModel.FK_tblSubCliente_tblProceso" />
+        <EntityTypeShape EntityType="CalicoModel.tblProducto" Width="1.5" PointX="3" PointY="13.75" />
+        <AssociationConnector Association="CalicoModel.FK_tblProducto_tblProceso" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
