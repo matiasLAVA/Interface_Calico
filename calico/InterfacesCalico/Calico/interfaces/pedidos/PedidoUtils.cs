@@ -202,7 +202,7 @@ namespace Calico.interfaces.pedidos
             }
 
             pedido.pedc_cliente = cliente;
-            pedido.pedc_destinatario = !String.IsNullOrWhiteSpace(pedidoDTO.F4201_AN8) ? pedidoDTO.F4201_AN8.Trim() : String.Empty;
+            pedido.pedc_destinatario = !String.IsNullOrWhiteSpace(pedidoDTO.F4201_SHAN) ? pedidoDTO.F4201_SHAN.Trim() : String.Empty;
             pedido.pedc_referenciaA = !String.IsNullOrWhiteSpace(pedidoDTO.F4201_VR01) ? pedidoDTO.F4201_VR01.Trim() : String.Empty;
             pedido.pedc_referenciaB = !String.IsNullOrWhiteSpace(pedidoDTO.F4201_VR02) ? pedidoDTO.F4201_VR02.Trim() : String.Empty;
             pedido.pedc_pais =  !String.IsNullOrWhiteSpace(pedidoDTO.F4006_COUN) ? pedidoDTO.F4006_COUN.Trim() : String.Empty;
@@ -221,6 +221,9 @@ namespace Calico.interfaces.pedidos
             pedido.pedc_observaciones = String.Empty;
             pedido.pedc_prioridad = 0;
             pedido.pedc_razonSocial = String.Empty;
+            pedido.pedc_referenciaA = !String.IsNullOrWhiteSpace(pedidoDTO.F4201_VR01) ? pedidoDTO.F4201_VR01.Trim() : String.Empty;
+            pedido.pedc_referenciaB = !String.IsNullOrWhiteSpace(pedidoDTO.F4201_VR02) ? pedidoDTO.F4201_VR02.Trim() : String.Empty;
+            pedido.pedc_observaciones = !String.IsNullOrWhiteSpace(pedidoDTO.F4201_DEL1) ? pedidoDTO.F4201_DEL1.Trim() : String.Empty;
 
             return pedido;
         }
