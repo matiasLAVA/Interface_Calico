@@ -116,7 +116,7 @@ namespace Calico.interfaces.clientes
             if (cliente == null)
             {
                 cliente = new tblSubCliente();
-                cliente.subc_codigoCliente = id;
+                cliente.subc_codigo = id;
                 dictionary.Add(id, cliente);
             }
             if (Constants.MLNM.Equals(key))

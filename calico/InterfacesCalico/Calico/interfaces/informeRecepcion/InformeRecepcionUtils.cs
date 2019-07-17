@@ -47,6 +47,7 @@ namespace Calico.interfaces.informeRecepcion
         {
             String myJsonString = String.Empty;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Proxy = null;  //12/07/2019 
             String encoded = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(user + ":" + pass));
             request.Headers.Add("Authorization", "Basic " + encoded);
             request.ContentType = "application/json";
