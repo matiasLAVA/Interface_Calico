@@ -14,7 +14,7 @@ namespace Calico.interfaces.informePedido
 
         public static String LAST_ERROR = String.Empty;
 
-        public List<InformePedidoJson> MappingInforme(tblInformePedido informe, String orderCompany,String orderType, String lastStatus,String nextStatus, String version)
+        public List<InformePedidoJson> MappingInforme(tblInformePedido informe, String orderCompany, String lastStatus,String nextStatus, String version)
         {
             List<InformePedidoJson> jsonList = new List<InformePedidoJson>();
 
@@ -24,7 +24,7 @@ namespace Calico.interfaces.informePedido
 
                 informeDTO.OrderCompany = orderCompany;
                 informeDTO.OrderNumber = informe.ipec_numero.ToString();
-                informeDTO.OrderType = orderType;
+                informeDTO.OrderType = informe.ipec_referenciaB;
                 informeDTO.OrderLineNumber = detalle.iped_linea.ToString();
                 informeDTO.Lot = Utils.GetValueOrEmpty(detalle.iped_lote);
                 informeDTO.ItemNumber = detalle.iped_producto.TrimStart(new Char[] { '0' }).Trim(); // sin CEROS a la izquierda;

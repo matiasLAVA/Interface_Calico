@@ -88,8 +88,7 @@ namespace Calico.interfaces.informePedido
             foreach (tblInformePedido informe in informes)
             {
                 callArchivar = true;
-                String orderType = FilePropertyUtils.Instance.GetValueString(INTERFACE + "." + Constants.INTERFACE_PEDIDOS_LETRA, informe.ipec_letra);
-                jsonList = informePedidoUtils.MappingInforme(informe, orderCompany, orderType, lastStatus, nextStatus, version);
+                jsonList = informePedidoUtils.MappingInforme(informe, orderCompany, lastStatus, nextStatus, version);
 
                 if (jsonList.Any())
                 {

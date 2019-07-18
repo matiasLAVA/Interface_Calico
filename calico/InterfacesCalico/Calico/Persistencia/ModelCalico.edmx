@@ -439,6 +439,10 @@
           <Parameter Name="id" Type="int" Mode="In" />
           <Parameter Name="error" Type="varchar(max)" Mode="InOut" />
         </Function>
+		<Function Name="INTERFAZ_ArchivarInformePedido" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="error" Type="varchar(max)" Mode="InOut" />
+        </Function>
         <Function Name="INTERFAZ_CrearProceso" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="tipoProceso" Type="int" Mode="In" />
           <Parameter Name="tipoMensaje" Type="int" Mode="In" />
@@ -566,6 +570,10 @@
             <Parameter Name="id" Mode="In" Type="Int32" />
             <Parameter Name="error" Mode="InOut" Type="String" />
           </FunctionImport>
+		  <FunctionImport Name="INTERFAZ_ArchivarInformePedido">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="error" Mode="InOut" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="INTERFAZ_InformarEjecucion">
             <Parameter Name="id" Mode="In" Type="Int32" />
             <Parameter Name="mensaje" Mode="In" Type="String" />
@@ -604,11 +612,7 @@
           <AssociationSet Name="FK_tblSubCliente_tblProceso" Association="CalicoModel.FK_tblSubCliente_tblProceso">
             <End Role="tblProceso" EntitySet="tblProceso" />
             <End Role="tblSubCliente" EntitySet="tblSubCliente" />
-          </AssociationSet>
-          <FunctionImport Name="INTERFAZ_ArchivarInformePedido">
-            <Parameter Name="id" Mode="In" Type="Int32" />
-            <Parameter Name="error" Mode="InOut" Type="String" />
-          </FunctionImport>
+          </AssociationSet>          
           <EntitySet Name="tblProducto" EntityType="CalicoModel.tblProducto" />
           <AssociationSet Name="FK_tblProducto_tblProceso" Association="CalicoModel.FK_tblProducto_tblProceso">
             <End Role="tblProceso" EntitySet="tblProceso" />
@@ -1180,6 +1184,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="INTERFAZ_ArchivarInformeRecepcion" FunctionName="CalicoModel.Store.INTERFAZ_ArchivarInformeRecepcion" />
+		  <FunctionImportMapping FunctionImportName="INTERFAZ_ArchivarInformePedido" FunctionName="CalicoModel.Store.INTERFAZ_ArchivarInformePedido" />
           <FunctionImportMapping FunctionImportName="INTERFAZ_InformarEjecucion" FunctionName="CalicoModel.Store.INTERFAZ_InformarEjecucion" />
           <EntitySetMapping Name="tblInformeRecepcion">
             <EntityTypeMapping TypeName="CalicoModel.tblInformeRecepcion">
