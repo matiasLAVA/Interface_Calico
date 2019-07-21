@@ -88,7 +88,8 @@ namespace Calico.interfaces.informePedido
             foreach (tblInformePedido informe in informes)
             {
                 callArchivar = true;
-                jsonList = informePedidoUtils.MappingInforme(informe, orderCompany, lastStatus, nextStatus, version);
+                Dictionary<decimal, List<tblInformePedidoDetalle>> map = informePedidoUtils.getMapDetalles(informe);
+                jsonList = informePedidoUtils.MappingInformeByMap(informe,map,orderCompany, lastStatus, nextStatus, version);
 
                 if (jsonList.Any())
                 {

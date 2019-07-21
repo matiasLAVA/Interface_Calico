@@ -14,14 +14,78 @@ namespace Calico.interfaces.informePedido
 
         public static String LAST_ERROR = String.Empty;
 
-        public List<InformePedidoJson> MappingInforme(tblInformePedido informe, String orderCompany, String lastStatus,String nextStatus, String version)
+        public Dictionary<decimal, List<tblInformePedidoDetalle>> getMapDetalles(tblInformePedido informe)
         {
-            List<InformePedidoJson> jsonList = new List<InformePedidoJson>();
+            Dictionary<decimal, List<tblInformePedidoDetalle>> map = new Dictionary<decimal, List<tblInformePedidoDetalle>>();
+            List<tblInformePedidoDetalle> listInformeDetailOut;
+            List<tblInformePedidoDetalle> listInformeDetail;
 
             foreach (tblInformePedidoDetalle detalle in informe.tblInformePedidoDetalle)
             {
-                InformePedidoDTO informeDTO = new InformePedidoDTO();
+                map.TryGetValue(detalle.iped_linea, out listInformeDetailOut);
 
+                if(listInformeDetailOut == null)
+                {
+                    listInformeDetail = new List<tblInformePedidoDetalle>();
+                    listInformeDetail.Add(detalle);
+                    map.Add(detalle.iped_linea, listInformeDetail);
+                }
+                else
+                {
+                    listInformeDetailOut.Add(detalle);
+                }
+            }
+
+            return map;
+        }
+
+        public string getCantidad(List<tblInformePedidoDetalle> listDetail)
+        {
+            int sum = 0;
+            foreach(tblInformePedidoDetalle detail in listDetail)
+            {
+                sum += Decimal.ToInt32(detail.iped_cantidad);
+            }
+
+            return sum.ToString();
+        }
+
+        public List<InformePedidoJson> MappingInformeByMap(tblInformePedido informe, Dictionary<decimal, List<tblInformePedidoDetalle>> map, String orderCompany, String lastStatus, String nextStatus, String version)
+        {
+            List<InformePedidoJson> jsonList = new List<InformePedidoJson>();
+            List<tblInformePedidoDetalle> listDetailOut;
+            foreach (var key in map.Keys)
+            {
+                map.TryGetValue(key, out listDetailOut);
+                tblInformePedidoDetalle first = listDetailOut[0];
+
+                InformePedidoDTO informeDTO = new InformePedidoDTO();
+                informeDTO.OrderCompany = orderCompany;
+                informeDTO.OrderNumber = informe.ipec_numero.ToString();
+                informeDTO.OrderType = informe.ipec_referenciaB;
+                informeDTO.OrderLineNumber = first.iped_linea.ToString();
+                informeDTO.Lot = Utils.GetValueOrEmpty(first.iped_lote);
+                informeDTO.ItemNumber = first.iped_producto.TrimStart(new Char[] { '0' }).Trim(); // sin CEROS a la izquierda;
+                informeDTO.ChgLastStatus = lastStatus;
+                informeDTO.ChgReference = Utils.GetValueOrEmpty(informe.ipec_referenciaA);
+                informeDTO.ChgNextStatus = nextStatus;
+                informeDTO.ChgDispatchQuantity = getCantidad(listDetailOut);
+                informeDTO.ChgLot = Utils.GetValueOrEmpty(first.iped_lote);
+                informeDTO.ChgDispatchDate = informe.ipec_fechaFinProceso.ToString("yyyy/MM/dd");
+                InformePedidoJson json = GetObjectJsonFromDTO(informeDTO);
+                json.P554211I_Version = version;
+                jsonList.Add(json);
+            }
+
+            return jsonList;
+        }
+
+        public List<InformePedidoJson> MappingInforme(tblInformePedido informe, String orderCompany, String lastStatus, String nextStatus, String version)
+        { 
+            List<InformePedidoJson> jsonList = new List<InformePedidoJson>();
+            foreach (tblInformePedidoDetalle detalle in informe.tblInformePedidoDetalle)
+            { 
+                InformePedidoDTO informeDTO = new InformePedidoDTO();
                 informeDTO.OrderCompany = orderCompany;
                 informeDTO.OrderNumber = informe.ipec_numero.ToString();
                 informeDTO.OrderType = informe.ipec_referenciaB;
