@@ -70,6 +70,9 @@ namespace Calico.interfaces.informePedido
             var tipos = FilePropertyUtils.Instance.GetValueArrayString(INTERFACE + "." + Constants.TIPO);
 
             List<tblInformePedido> informes = serviceInformePedido.FindInformes(emplazamiento, almacenes, tipos, tipoProceso);
+            Dictionary<decimal, List<tblInformePedidoDetalle>> map = informePedidoUtils.getMapDetalles(informes);
+            Dictionary<decimal, int> mapTotalCantidadLinea = informePedidoUtils.getMapTotalCantidadLinea(informes);
+
             List<InformePedidoJson> jsonList = null;
 
             /* Obtenemos usuario y contraseña del archivo para el servicio Rest */
@@ -84,16 +87,21 @@ namespace Calico.interfaces.informePedido
             int count = 0;
             int countError = 0;
             Boolean callArchivar;
+            List<tblInformePedidoDetalle> detalles;
+            Dictionary<decimal, int> mapIdsOK = new Dictionary<decimal, int>();
+            Dictionary<decimal, int> mapIdsKO = new Dictionary<decimal, int>();
 
-            foreach (tblInformePedido informe in informes)
+            foreach (decimal key in map.Keys)
             {
                 callArchivar = true;
-                Dictionary<decimal, List<tblInformePedidoDetalle>> map = informePedidoUtils.getMapDetalles(informe);
-                jsonList = informePedidoUtils.MappingInformeByMap(informe,map,orderCompany, lastStatus, nextStatus, version);
+                detalles = new List<tblInformePedidoDetalle>();
+                map.TryGetValue(key, out detalles);
+                tblInformePedido lastPedido = detalles[detalles.Count - 1].tblInformePedido;
+                jsonList = informePedidoUtils.MappingInformeByMap(detalles, orderCompany, lastStatus, nextStatus, version);
 
                 if (jsonList.Any())
                 {
-                    Console.WriteLine("Se llevara a cabo el envio al servicio REST de los detalles de la cabecera: " + informe.ipec_proc_id);
+                    //Console.WriteLine("Se llevara a cabo el envio al servicio REST de los detalles de la cabecera: " + informe.ipec_proc_id);
                     foreach (InformePedidoJson json in jsonList)
                     {
                         var jsonString = informePedidoUtils.JsonToString(json);
@@ -102,28 +110,32 @@ namespace Calico.interfaces.informePedido
                         /* Send request */
                         if (!(informePedidoUtils.SendRequestPost(url, user, pass, jsonString)))
                         {
-                            Console.WriteLine("Se llamara al procedure para informar el error");
-                            serviceInformePedido.CallProcedureInformarEjecucion(informe.ipec_proc_id, InformePedidoUtils.LAST_ERROR, new ObjectParameter("error", typeof(String)));
-                            callArchivar = false;
-                            countError++;
+                            //Console.WriteLine("Se llamara al procedure para informar el error");
+                            //serviceInformePedido.CallProcedureInformarEjecucion(informe.ipec_proc_id, InformePedidoUtils.LAST_ERROR, new ObjectParameter("error", typeof(String)));
+                            //callArchivar = false;
+                            //countError++;
+
+                            mapIdsKO.Add(key, lastPedido.ipec_proc_id);
+                                //add(key, lastPedido.ipec_proc_id);
                         }
                         else
                         {
-                            Console.WriteLine("El servicio REST retorno OK: " + jsonString);
-                            count++;
+                            //Console.WriteLine("El servicio REST retorno OK: " + jsonString);
+                            //count++;
+                            mapIdsOK.Add(key, lastPedido.ipec_proc_id);
                         }
                     }
 
-                    if (callArchivar)
-                    {
-                        Console.WriteLine("Se llamara al procedure para archivar el informe");
-                        serviceInformePedido.CallProcedureArchivarInformePedido(informe.ipec_proc_id, new ObjectParameter("error", typeof(String)));
-                    }
+                    //if (callArchivar)
+                    //{
+                    //    Console.WriteLine("Se llamara al procedure para archivar el informe");
+                    //    serviceInformePedido.CallProcedureArchivarInformePedido(informe.ipec_proc_id, new ObjectParameter("error", typeof(String)));
+                    //}
 
                 }
                 else
                 {
-                    Console.WriteLine("No se encontraron detalles para la cabecera: " + informe.ipec_proc_id);
+                    //Console.WriteLine("No se encontraron detalles para la cabecera: " + informe.ipec_proc_id);
                 }
 
             }

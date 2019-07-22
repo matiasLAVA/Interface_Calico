@@ -14,27 +14,54 @@ namespace Calico.interfaces.informePedido
 
         public static String LAST_ERROR = String.Empty;
 
-        public Dictionary<decimal, List<tblInformePedidoDetalle>> getMapDetalles(tblInformePedido informe)
+        public Dictionary<decimal, int> getMapTotalCantidadLinea(List<tblInformePedido> informes)
+        {
+            Dictionary<decimal, int> mapTotalCantidadLinea = new Dictionary<decimal, int>();
+            int cantidadOut = 0;
+
+            foreach (tblInformePedido informe in informes)
+            {
+                foreach (tblInformePedidoDetalle detalle in informe.tblInformePedidoDetalle)
+                {
+                    mapTotalCantidadLinea.TryGetValue(detalle.iped_linea, out cantidadOut);
+
+                    if (cantidadOut == 0)
+                    {
+                        mapTotalCantidadLinea.Add(detalle.iped_linea, Decimal.ToInt32(detalle.iped_cantidad));
+                    }
+                    else
+                    {
+                        mapTotalCantidadLinea[detalle.iped_linea] = cantidadOut + Decimal.ToInt32(detalle.iped_cantidad);
+                    }
+                }
+            }
+        }
+
+        public Dictionary<decimal, List<tblInformePedidoDetalle>> getMapDetalles(List<tblInformePedido> informes)
         {
             Dictionary<decimal, List<tblInformePedidoDetalle>> map = new Dictionary<decimal, List<tblInformePedidoDetalle>>();
             List<tblInformePedidoDetalle> listInformeDetailOut;
             List<tblInformePedidoDetalle> listInformeDetail;
 
-            foreach (tblInformePedidoDetalle detalle in informe.tblInformePedidoDetalle)
+            foreach(tblInformePedido informe in informes)
             {
-                map.TryGetValue(detalle.iped_linea, out listInformeDetailOut);
+                foreach (tblInformePedidoDetalle detalle in informe.tblInformePedidoDetalle)
+                {
+                    map.TryGetValue(detalle.iped_linea, out listInformeDetailOut);
 
-                if(listInformeDetailOut == null)
-                {
-                    listInformeDetail = new List<tblInformePedidoDetalle>();
-                    listInformeDetail.Add(detalle);
-                    map.Add(detalle.iped_linea, listInformeDetail);
-                }
-                else
-                {
-                    listInformeDetailOut.Add(detalle);
+                    if (listInformeDetailOut == null)
+                    {
+                        listInformeDetail = new List<tblInformePedidoDetalle>();
+                        listInformeDetail.Add(detalle);
+                        map.Add(detalle.iped_linea, listInformeDetail);
+                    }
+                    else
+                    {
+                        listInformeDetailOut.Add(detalle);
+                    }
                 }
             }
+
 
             return map;
         }
@@ -50,32 +77,29 @@ namespace Calico.interfaces.informePedido
             return sum.ToString();
         }
 
-        public List<InformePedidoJson> MappingInformeByMap(tblInformePedido informe, Dictionary<decimal, List<tblInformePedidoDetalle>> map, String orderCompany, String lastStatus, String nextStatus, String version)
+        public List<InformePedidoJson> MappingInformeByMap(List<tblInformePedidoDetalle> detalles, String orderCompany, String lastStatus, String nextStatus, String version)
         {
             List<InformePedidoJson> jsonList = new List<InformePedidoJson>();
-            List<tblInformePedidoDetalle> listDetailOut;
-            foreach (var key in map.Keys)
-            {
-                map.TryGetValue(key, out listDetailOut);
-                tblInformePedidoDetalle first = listDetailOut[0];
+            InformePedidoDTO informeDTO = new InformePedidoDTO();
+            tblInformePedidoDetalle lastDetail = detalles[detalles.Count - 1];
+            tblInformePedido lastPedido = detalles[detalles.Count - 1].tblInformePedido;
 
-                InformePedidoDTO informeDTO = new InformePedidoDTO();
-                informeDTO.OrderCompany = orderCompany;
-                informeDTO.OrderNumber = informe.ipec_numero.ToString();
-                informeDTO.OrderType = informe.ipec_referenciaB;
-                informeDTO.OrderLineNumber = first.iped_linea.ToString();
-                informeDTO.Lot = Utils.GetValueOrEmpty(first.iped_lote);
-                informeDTO.ItemNumber = first.iped_producto.TrimStart(new Char[] { '0' }).Trim(); // sin CEROS a la izquierda;
-                informeDTO.ChgLastStatus = lastStatus;
-                informeDTO.ChgReference = Utils.GetValueOrEmpty(informe.ipec_referenciaA);
-                informeDTO.ChgNextStatus = nextStatus;
-                informeDTO.ChgDispatchQuantity = getCantidad(listDetailOut);
-                informeDTO.ChgLot = Utils.GetValueOrEmpty(first.iped_lote);
-                informeDTO.ChgDispatchDate = informe.ipec_fechaFinProceso.ToString("yyyy/MM/dd");
-                InformePedidoJson json = GetObjectJsonFromDTO(informeDTO);
-                json.P554211I_Version = version;
-                jsonList.Add(json);
-            }
+            informeDTO.OrderCompany = orderCompany;
+            informeDTO.OrderNumber = lastPedido.ipec_numero.ToString();
+            informeDTO.OrderType = lastPedido.ipec_referenciaB;
+            informeDTO.OrderLineNumber = lastDetail.iped_linea.ToString();
+            informeDTO.Lot = Utils.GetValueOrEmpty(lastDetail.iped_lote);
+            informeDTO.ItemNumber = lastDetail.iped_producto.TrimStart(new Char[] { '0' }).Trim(); // sin CEROS a la izquierda;
+            informeDTO.ChgLastStatus = lastStatus;
+            informeDTO.ChgReference = Utils.GetValueOrEmpty(lastPedido.ipec_referenciaA);
+            informeDTO.ChgNextStatus = nextStatus;
+            informeDTO.ChgDispatchQuantity = getCantidad(detalles);
+            informeDTO.ChgLot = Utils.GetValueOrEmpty(lastDetail.iped_lote);
+            informeDTO.ChgDispatchDate = lastPedido.ipec_fechaFinProceso.ToString("yyyy/MM/dd");
+            InformePedidoJson json = GetObjectJsonFromDTO(informeDTO);
+            json.P554211I_Version = version;
+            jsonList.Add(json);
+
 
             return jsonList;
         }
