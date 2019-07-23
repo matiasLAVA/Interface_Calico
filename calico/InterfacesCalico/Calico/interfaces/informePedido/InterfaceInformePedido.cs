@@ -86,16 +86,15 @@ namespace Calico.interfaces.informePedido
 
             int count = 0;
             int countError = 0;
+            int cantidad = 0;
             List<int> listIdsOK = new List<int>();
             Dictionary<int, String> mapIdsKO = new Dictionary<int, String>();
 
             foreach (KeyValuePair<string, List<tblInformePedidoDetalle>> entry in map)
-            //foreach (String key in map.Keys)
             { 
                 List<tblInformePedidoDetalle> SortedList = entry.Value.OrderByDescending(o => o.iped_id).ToList();
-                tblInformePedidoDetalle detalle = SortedList[SortedList.Count - 1];
+                tblInformePedidoDetalle detalle = SortedList[0];
                 tblInformePedido lastPedido = detalle.tblInformePedido;
-                int cantidad;
                 mapTotalCantidadLinea.TryGetValue(entry.Key, out cantidad);
                 jsonList = informePedidoUtils.MappingInformeByMap(detalle, orderCompany, lastStatus, nextStatus, version, cantidad);
 
