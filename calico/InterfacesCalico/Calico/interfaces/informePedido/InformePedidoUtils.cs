@@ -82,24 +82,23 @@ namespace Calico.interfaces.informePedido
             return sum.ToString();
         }
 
-        public List<InformePedidoJson> MappingInformeByMap(List<tblInformePedidoDetalle> detalles, String orderCompany, String lastStatus, String nextStatus, String version)
+        public List<InformePedidoJson> MappingInformeByMap(tblInformePedidoDetalle detalles, String orderCompany, String lastStatus, String nextStatus, String version, int cantidad)
         {
             List<InformePedidoJson> jsonList = new List<InformePedidoJson>();
             InformePedidoDTO informeDTO = new InformePedidoDTO();
-            tblInformePedidoDetalle lastDetail = detalles[detalles.Count - 1];
-            tblInformePedido lastPedido = detalles[detalles.Count - 1].tblInformePedido;
+            tblInformePedido lastPedido = detalles.tblInformePedido;
 
             informeDTO.OrderCompany = orderCompany;
             informeDTO.OrderNumber = lastPedido.ipec_numero.ToString();
             informeDTO.OrderType = lastPedido.ipec_referenciaB;
-            informeDTO.OrderLineNumber = lastDetail.iped_linea.ToString();
-            informeDTO.Lot = Utils.GetValueOrEmpty(lastDetail.iped_lote);
-            informeDTO.ItemNumber = lastDetail.iped_producto.TrimStart(new Char[] { '0' }).Trim(); // sin CEROS a la izquierda;
+            informeDTO.OrderLineNumber = detalles.iped_linea.ToString();
+            informeDTO.Lot = Utils.GetValueOrEmpty(detalles.iped_lote);
+            informeDTO.ItemNumber = detalles.iped_producto.TrimStart(new Char[] { '0' }).Trim(); // sin CEROS a la izquierda;
             informeDTO.ChgLastStatus = lastStatus;
             informeDTO.ChgReference = Utils.GetValueOrEmpty(lastPedido.ipec_referenciaA);
             informeDTO.ChgNextStatus = nextStatus;
-            informeDTO.ChgDispatchQuantity = getCantidad(detalles);
-            informeDTO.ChgLot = Utils.GetValueOrEmpty(lastDetail.iped_lote);
+            informeDTO.ChgDispatchQuantity = cantidad.ToString();
+            informeDTO.ChgLot = Utils.GetValueOrEmpty(detalles.iped_lote);
             informeDTO.ChgDispatchDate = lastPedido.ipec_fechaFinProceso.ToString("yyyy/MM/dd");
             InformePedidoJson json = GetObjectJsonFromDTO(informeDTO);
             json.P554211I_Version = version;
