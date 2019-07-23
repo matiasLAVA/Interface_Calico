@@ -70,8 +70,8 @@ namespace Calico.interfaces.informePedido
             var tipos = FilePropertyUtils.Instance.GetValueArrayString(INTERFACE + "." + Constants.TIPO);
 
             List<tblInformePedido> informes = serviceInformePedido.FindInformes(emplazamiento, almacenes, tipos, tipoProceso);
-            Dictionary<decimal, List<tblInformePedidoDetalle>> map = informePedidoUtils.getMapDetalles(informes);
-            Dictionary<decimal, int> mapTotalCantidadLinea = informePedidoUtils.getMapTotalCantidadLinea(informes);
+            Dictionary<String, int> mapTotalCantidadLinea;
+            Dictionary<String, List<tblInformePedidoDetalle>> map = informePedidoUtils.getMapDetalles(informes, out mapTotalCantidadLinea);
 
             List<InformePedidoJson> jsonList = null;
 
@@ -90,12 +90,15 @@ namespace Calico.interfaces.informePedido
             List<int> listIdsOK = new List<int>();
             Dictionary<int, String> mapIdsKO = new Dictionary<int, String>();
 
-            foreach (decimal key in map.Keys)
-            {
-                detalles = new List<tblInformePedidoDetalle>();
-                map.TryGetValue(key, out detalles);
-                tblInformePedido lastPedido = detalles[detalles.Count - 1].tblInformePedido;
-                jsonList = informePedidoUtils.MappingInformeByMap(detalles, orderCompany, lastStatus, nextStatus, version);
+            foreach (KeyValuePair<string, List<tblInformePedidoDetalle>> entry in map)
+            //foreach (String key in map.Keys)
+            { 
+                List<tblInformePedidoDetalle> SortedList = entry.Value.OrderByDescending(o => o.iped_id).ToList();
+                tblInformePedidoDetalle detalle = SortedList[SortedList.Count - 1];
+                tblInformePedido lastPedido = detalle.tblInformePedido;
+                int cantidad;
+                mapTotalCantidadLinea.TryGetValue(entry.Key, out cantidad);
+                jsonList = informePedidoUtils.MappingInformeByMap(detalle, orderCompany, lastStatus, nextStatus, version, cantidad);
 
                 if (jsonList.Any())
                 {
