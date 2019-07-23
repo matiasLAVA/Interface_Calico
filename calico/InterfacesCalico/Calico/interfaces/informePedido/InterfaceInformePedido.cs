@@ -86,7 +86,6 @@ namespace Calico.interfaces.informePedido
 
             int count = 0;
             int countError = 0;
-            List<tblInformePedidoDetalle> detalles;
             List<int> listIdsOK = new List<int>();
             Dictionary<int, String> mapIdsKO = new Dictionary<int, String>();
 
@@ -112,14 +111,14 @@ namespace Calico.interfaces.informePedido
                         if (!(informePedidoUtils.SendRequestPost(url, user, pass, jsonString)))
                         {
                             Console.WriteLine("El servicio REST retorno KO");
-                            countError += detalles.Count;
-                            informePedidoUtils.fillMapKO(mapIdsKO, detalles, InformePedidoUtils.LAST_ERROR);
+                            countError += SortedList.Count;
+                            informePedidoUtils.fillMapKO(mapIdsKO, SortedList, InformePedidoUtils.LAST_ERROR);
                         }
                         else
                         {
                             Console.WriteLine("El servicio REST retorno OK: " + jsonString);
-                            count += detalles.Count;
-                            listIdsOK.AddRange(informePedidoUtils.getIdsPedidos(detalles));
+                            count += SortedList.Count;
+                            listIdsOK.AddRange(informePedidoUtils.getIdsPedidos(SortedList));
                         }
                     }
                 }
