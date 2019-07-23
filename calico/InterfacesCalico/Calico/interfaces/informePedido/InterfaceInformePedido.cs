@@ -70,8 +70,8 @@ namespace Calico.interfaces.informePedido
             var tipos = FilePropertyUtils.Instance.GetValueArrayString(INTERFACE + "." + Constants.TIPO);
 
             List<tblInformePedido> informes = serviceInformePedido.FindInformes(emplazamiento, almacenes, tipos, tipoProceso);
-            Dictionary<decimal, List<tblInformePedidoDetalle>> map = informePedidoUtils.getMapDetalles(informes);
-            Dictionary<decimal, int> mapTotalCantidadLinea = informePedidoUtils.getMapTotalCantidadLinea(informes);
+            Dictionary<String, int> mapTotalCantidadLinea;
+            Dictionary<String, List<tblInformePedidoDetalle>> map = informePedidoUtils.getMapDetalles(informes, out mapTotalCantidadLinea);
 
             List<InformePedidoJson> jsonList = null;
 
@@ -86,16 +86,16 @@ namespace Calico.interfaces.informePedido
 
             int count = 0;
             int countError = 0;
-            Boolean callArchivar;
             List<tblInformePedidoDetalle> detalles;
-            Dictionary<decimal, int> mapIdsOK = new Dictionary<decimal, int>();
-            Dictionary<decimal, int> mapIdsKO = new Dictionary<decimal, int>();
+            List<int> mapIdsOK = new List<int>();
+            Dictionary<int, String> mapIdsKO = new Dictionary<int, String>();
 
-            foreach (decimal key in map.Keys)
+            foreach (KeyValuePair<string, List<tblInformePedidoDetalle>> entry in map)
+            //foreach (String key in map.Keys)
             {
-                callArchivar = true;
+                List<tblInformePedidoDetalle> SortedList = entry.Value.OrderByDescending(o => o.iped_id).ToList();
                 detalles = new List<tblInformePedidoDetalle>();
-                map.TryGetValue(key, out detalles);
+                map.TryGetValue(entry.Key, out detalles);
                 tblInformePedido lastPedido = detalles[detalles.Count - 1].tblInformePedido;
                 jsonList = informePedidoUtils.MappingInformeByMap(detalles, orderCompany, lastStatus, nextStatus, version);
 
@@ -115,14 +115,14 @@ namespace Calico.interfaces.informePedido
                             //callArchivar = false;
                             //countError++;
 
-                            mapIdsKO.Add(key, lastPedido.ipec_proc_id);
-                                //add(key, lastPedido.ipec_proc_id);
+                            mapIdsKO.Add(lastPedido.ipec_proc_id, InformePedidoUtils.LAST_ERROR);
+                            //add(key, lastPedido.ipec_proc_id);
                         }
                         else
                         {
                             //Console.WriteLine("El servicio REST retorno OK: " + jsonString);
                             //count++;
-                            mapIdsOK.Add(key, lastPedido.ipec_proc_id);
+                            mapIdsOK.Add(lastPedido.ipec_proc_id);
                         }
                     }
 

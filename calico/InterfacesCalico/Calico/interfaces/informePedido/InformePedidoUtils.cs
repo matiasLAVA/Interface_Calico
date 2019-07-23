@@ -14,50 +14,55 @@ namespace Calico.interfaces.informePedido
 
         public static String LAST_ERROR = String.Empty;
 
-        public Dictionary<decimal, int> getMapTotalCantidadLinea(List<tblInformePedido> informes)
+        //public Dictionary<String, int> GetMapTotalCantidadLinea(List<tblInformePedido> informes)
+        //{
+        //    Dictionary<String, int> mapTotalCantidadLinea = new Dictionary<String, int>();
+        //    int cantidadOut = 0;
+
+        //    foreach (tblInformePedido informe in informes)
+        //    {
+        //        foreach (tblInformePedidoDetalle detalle in informe.tblInformePedidoDetalle)
+        //        {
+        //            mapTotalCantidadLinea.TryGetValue(informe.ipec_numero + "_" + detalle.iped_linea, out cantidadOut);
+
+        //            if (cantidadOut == 0)
+        //            {
+        //                mapTotalCantidadLinea.Add(informe.ipec_numero + "_" + detalle.iped_linea, Decimal.ToInt32(detalle.iped_cantidad));
+        //            }
+        //            else
+        //            {
+        //                mapTotalCantidadLinea[informe.ipec_numero + "_" + detalle.iped_linea] = cantidadOut + Decimal.ToInt32(detalle.iped_cantidad);
+        //            }
+        //        }
+        //    }
+        //    return mapTotalCantidadLinea;
+        //}
+
+        public Dictionary<String, List<tblInformePedidoDetalle>> getMapDetalles(List<tblInformePedido> informes, out Dictionary<String, int> mapTotalCantidadLinea)
         {
-            Dictionary<decimal, int> mapTotalCantidadLinea = new Dictionary<decimal, int>();
+            Dictionary<String, List<tblInformePedidoDetalle>> map = new Dictionary<String, List<tblInformePedidoDetalle>>();
+            List<tblInformePedidoDetalle> listInformeDetailOut;
+            mapTotalCantidadLinea = new Dictionary<String, int>();
             int cantidadOut = 0;
 
             foreach (tblInformePedido informe in informes)
             {
                 foreach (tblInformePedidoDetalle detalle in informe.tblInformePedidoDetalle)
                 {
-                    mapTotalCantidadLinea.TryGetValue(detalle.iped_linea, out cantidadOut);
-
-                    if (cantidadOut == 0)
-                    {
-                        mapTotalCantidadLinea.Add(detalle.iped_linea, Decimal.ToInt32(detalle.iped_cantidad));
-                    }
-                    else
-                    {
-                        mapTotalCantidadLinea[detalle.iped_linea] = cantidadOut + Decimal.ToInt32(detalle.iped_cantidad);
-                    }
-                }
-            }
-        }
-
-        public Dictionary<decimal, List<tblInformePedidoDetalle>> getMapDetalles(List<tblInformePedido> informes)
-        {
-            Dictionary<decimal, List<tblInformePedidoDetalle>> map = new Dictionary<decimal, List<tblInformePedidoDetalle>>();
-            List<tblInformePedidoDetalle> listInformeDetailOut;
-            List<tblInformePedidoDetalle> listInformeDetail;
-
-            foreach(tblInformePedido informe in informes)
-            {
-                foreach (tblInformePedidoDetalle detalle in informe.tblInformePedidoDetalle)
-                {
-                    map.TryGetValue(detalle.iped_linea, out listInformeDetailOut);
+                    map.TryGetValue(informe.ipec_numero + "_" + detalle.iped_linea, out listInformeDetailOut);
 
                     if (listInformeDetailOut == null)
                     {
-                        listInformeDetail = new List<tblInformePedidoDetalle>();
+                        List<tblInformePedidoDetalle> listInformeDetail = new List<tblInformePedidoDetalle>();
                         listInformeDetail.Add(detalle);
-                        map.Add(detalle.iped_linea, listInformeDetail);
+                        map.Add(informe.ipec_numero + "_" + detalle.iped_linea, listInformeDetail);
+                        mapTotalCantidadLinea.Add(informe.ipec_numero + "_" + detalle.iped_linea, Decimal.ToInt32(detalle.iped_cantidad));
                     }
                     else
                     {
                         listInformeDetailOut.Add(detalle);
+                        mapTotalCantidadLinea.TryGetValue(informe.ipec_numero + "_" + detalle.iped_linea, out cantidadOut);
+                        mapTotalCantidadLinea[informe.ipec_numero + "_" + detalle.iped_linea] = cantidadOut + Decimal.ToInt32(detalle.iped_cantidad);
                     }
                 }
             }
