@@ -86,14 +86,12 @@ namespace Calico.interfaces.informePedido
 
             int count = 0;
             int countError = 0;
-            Boolean callArchivar;
             List<tblInformePedidoDetalle> detalles;
-            Dictionary<decimal, int> mapIdsOK = new Dictionary<decimal, int>();
-            Dictionary<decimal, int> mapIdsKO = new Dictionary<decimal, int>();
+            List<int> listIdsOK = new List<int>();
+            Dictionary<int, String> mapIdsKO = new Dictionary<int, String>();
 
             foreach (decimal key in map.Keys)
             {
-                callArchivar = true;
                 detalles = new List<tblInformePedidoDetalle>();
                 map.TryGetValue(key, out detalles);
                 tblInformePedido lastPedido = detalles[detalles.Count - 1].tblInformePedido;
@@ -110,36 +108,33 @@ namespace Calico.interfaces.informePedido
                         /* Send request */
                         if (!(informePedidoUtils.SendRequestPost(url, user, pass, jsonString)))
                         {
-                            //Console.WriteLine("Se llamara al procedure para informar el error");
-                            //serviceInformePedido.CallProcedureInformarEjecucion(informe.ipec_proc_id, InformePedidoUtils.LAST_ERROR, new ObjectParameter("error", typeof(String)));
-                            //callArchivar = false;
-                            //countError++;
-
-                            mapIdsKO.Add(key, lastPedido.ipec_proc_id);
-                                //add(key, lastPedido.ipec_proc_id);
+                            Console.WriteLine("El servicio REST retorno KO");
+                            countError += detalles.Count;
+                            informePedidoUtils.fillMapKO(mapIdsKO, detalles, InformePedidoUtils.LAST_ERROR);
                         }
                         else
                         {
-                            //Console.WriteLine("El servicio REST retorno OK: " + jsonString);
-                            //count++;
-                            mapIdsOK.Add(key, lastPedido.ipec_proc_id);
+                            Console.WriteLine("El servicio REST retorno OK: " + jsonString);
+                            count += detalles.Count;
+                            listIdsOK.AddRange(informePedidoUtils.getIdsPedidos(detalles));
                         }
                     }
-
-                    //if (callArchivar)
-                    //{
-                    //    Console.WriteLine("Se llamara al procedure para archivar el informe");
-                    //    serviceInformePedido.CallProcedureArchivarInformePedido(informe.ipec_proc_id, new ObjectParameter("error", typeof(String)));
-                    //}
-
                 }
-                else
-                {
-                    //Console.WriteLine("No se encontraron detalles para la cabecera: " + informe.ipec_proc_id);
-                }
-
             }
 
+            foreach (KeyValuePair<int, string> entry in mapIdsKO)
+            {
+                Console.WriteLine("Se llamara al procedure para informar los errores");
+                serviceInformePedido.CallProcedureInformarEjecucion(entry.Key, entry.Value, new ObjectParameter("error", typeof(String)));
+            }
+
+            foreach(int id in listIdsOK)
+            {
+                Console.WriteLine("Se llamara al procedure para archivar los informes");
+                serviceInformePedido.CallProcedureArchivarInformePedido(id, new ObjectParameter("error", typeof(String)));
+            }
+
+            
             Console.WriteLine("Finalizó el proceso de actualización de Recepciones");
 
             /* Agregamos datos faltantes de la tabla de procesos */

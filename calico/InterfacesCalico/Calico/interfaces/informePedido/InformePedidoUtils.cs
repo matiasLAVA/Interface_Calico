@@ -77,6 +77,25 @@ namespace Calico.interfaces.informePedido
             return sum.ToString();
         }
 
+        public void fillMapKO(Dictionary<int, String> mapIdsKO, List<tblInformePedidoDetalle> detalles,String error)
+        {
+            foreach(tblInformePedidoDetalle detalle in detalles)
+            {
+                mapIdsKO.Add(detalle.tblInformePedido.ipec_proc_id, error);
+            }
+        }
+
+        public List<int> getIdsPedidos(List<tblInformePedidoDetalle> detalles)
+        {
+            List<int> listIds = new List<int>();
+            foreach (tblInformePedidoDetalle detalle in detalles)
+            {
+                listIds.Add(detalle.tblInformePedido.ipec_proc_id);
+            }
+
+            return listIds;
+        }
+
         public List<InformePedidoJson> MappingInformeByMap(List<tblInformePedidoDetalle> detalles, String orderCompany, String lastStatus, String nextStatus, String version)
         {
             List<InformePedidoJson> jsonList = new List<InformePedidoJson>();
