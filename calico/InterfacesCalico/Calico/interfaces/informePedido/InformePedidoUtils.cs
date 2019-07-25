@@ -74,7 +74,7 @@ namespace Calico.interfaces.informePedido
         public string getCantidad(List<tblInformePedidoDetalle> listDetail)
         {
             int sum = 0;
-            foreach(tblInformePedidoDetalle detail in listDetail)
+            foreach (tblInformePedidoDetalle detail in listDetail)
             {
                 sum += Decimal.ToInt32(detail.iped_cantidad);
             }
@@ -82,9 +82,9 @@ namespace Calico.interfaces.informePedido
             return sum.ToString();
         }
 
-        public void fillMapKO(Dictionary<int, String> mapIdsKO, List<tblInformePedidoDetalle> detalles,String error)
+        public void fillMapKO(Dictionary<int, String> mapIdsKO, List<tblInformePedidoDetalle> detalles, String error)
         {
-            foreach(tblInformePedidoDetalle detalle in detalles)
+            foreach (tblInformePedidoDetalle detalle in detalles)
             {
                 mapIdsKO.Add(detalle.tblInformePedido.ipec_proc_id, error);
             }
@@ -109,7 +109,8 @@ namespace Calico.interfaces.informePedido
 
             informeDTO.OrderCompany = orderCompany;
             informeDTO.OrderNumber = lastPedido.ipec_numero.ToString();
-            informeDTO.OrderType = lastPedido.ipec_referenciaB;
+            //informeDTO.OrderType = lastPedido.ipec_referenciaB;
+            informeDTO.OrderType = Utils.GetValueOrEmpty(lastPedido.ipec_referenciaB);
             informeDTO.OrderLineNumber = detalles.iped_linea.ToString();
             informeDTO.Lot = Utils.GetValueOrEmpty(detalles.iped_lote);
             informeDTO.ItemNumber = detalles.iped_producto.TrimStart(new Char[] { '0' }).Trim(); // sin CEROS a la izquierda;
@@ -128,10 +129,10 @@ namespace Calico.interfaces.informePedido
         }
 
         public List<InformePedidoJson> MappingInforme(tblInformePedido informe, String orderCompany, String lastStatus, String nextStatus, String version)
-        { 
+        {
             List<InformePedidoJson> jsonList = new List<InformePedidoJson>();
             foreach (tblInformePedidoDetalle detalle in informe.tblInformePedidoDetalle)
-            { 
+            {
                 InformePedidoDTO informeDTO = new InformePedidoDTO();
                 informeDTO.OrderCompany = orderCompany;
                 informeDTO.OrderNumber = informe.ipec_numero.ToString();
@@ -174,7 +175,7 @@ namespace Calico.interfaces.informePedido
         public Boolean SendRequestPost(string url, String user, String pass, String json)
         {
             String myJsonString = String.Empty;
-            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Proxy = null;  //12/07/2019 
             String encoded = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(user + ":" + pass));
             request.Headers.Add("Authorization", "Basic " + encoded);

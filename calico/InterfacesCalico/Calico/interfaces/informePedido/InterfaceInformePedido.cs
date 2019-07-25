@@ -87,14 +87,19 @@ namespace Calico.interfaces.informePedido
             int count = 0;
             int countError = 0;
             int cantidad = 0;
+            String iderroneo = String.Empty;
             List<int> listIdsOK = new List<int>();
             Dictionary<int, String> mapIdsKO = new Dictionary<int, String>();
 
             foreach (KeyValuePair<string, List<tblInformePedidoDetalle>> entry in map)
-            { 
+            {
                 List<tblInformePedidoDetalle> SortedList = entry.Value.OrderByDescending(o => o.iped_id).ToList();
                 tblInformePedidoDetalle detalle = SortedList[0];
                 tblInformePedido lastPedido = detalle.tblInformePedido;
+
+                if (mapIdsKO.ContainsKey(lastPedido.ipec_proc_id))
+                    continue;
+
                 mapTotalCantidadLinea.TryGetValue(entry.Key, out cantidad);
                 jsonList = informePedidoUtils.MappingInformeByMap(detalle, orderCompany, lastStatus, nextStatus, version, cantidad);
 
@@ -129,13 +134,13 @@ namespace Calico.interfaces.informePedido
                 serviceInformePedido.CallProcedureInformarEjecucion(entry.Key, entry.Value, new ObjectParameter("error", typeof(String)));
             }
 
-            foreach(int id in listIdsOK)
+            foreach (int id in listIdsOK.Distinct().ToList())
             {
                 Console.WriteLine("Se llamara al procedure para archivar los informes");
                 serviceInformePedido.CallProcedureArchivarInformePedido(id, new ObjectParameter("error", typeof(String)));
             }
 
-            
+
             Console.WriteLine("Finalizó el proceso de actualización de Recepciones");
 
             /* Agregamos datos faltantes de la tabla de procesos */
@@ -145,8 +150,8 @@ namespace Calico.interfaces.informePedido
             process.cant_lineas = count;
             process.estado = Constants.ESTADO_OK;
             Console.WriteLine("Fecha_fin: " + process.fin);
-            Console.WriteLine("Cantidad de Recepciones procesadas OK: " + process.cant_lineas);
-            Console.WriteLine("Cantidad de Recepciones procesadas con ERROR: " + countError);
+            Console.WriteLine("Cantidad de líneas pedido procesadas OK: " + process.cant_lineas);
+            Console.WriteLine("Cantidad de líneas pedido procesadas con ERROR: " + countError);
             Console.WriteLine("Estado: " + process.estado);
 
             /* Actualizamos la tabla BIANCHI_PROCESS */
