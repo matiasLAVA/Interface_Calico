@@ -136,8 +136,8 @@ namespace Calico.interfaces.informePedido
             process.cant_lineas = count;
             process.estado = Constants.ESTADO_OK;
             Console.WriteLine("Fecha_fin: " + process.fin);
-            Console.WriteLine("Cantidad de Recepciones procesadas OK: " + process.cant_lineas);
-            Console.WriteLine("Cantidad de Recepciones procesadas con ERROR: " + countError);
+            Console.WriteLine("Cantidad de líneas pedido procesadas OK: " + process.cant_lineas);
+            Console.WriteLine("Cantidad de líneas pedido procesadas con ERROR: " + countError);
             Console.WriteLine("Estado: " + process.estado);
 
             /* Actualizamos la tabla BIANCHI_PROCESS */
