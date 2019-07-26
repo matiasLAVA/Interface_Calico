@@ -87,7 +87,6 @@ namespace Calico.interfaces.informePedido
             int count = 0;
             int countError = 0;
             int cantidad = 0;
-            String iderroneo = String.Empty;
             List<int> listIdsOK = new List<int>();
             Dictionary<int, String> mapIdsKO = new Dictionary<int, String>();
 
