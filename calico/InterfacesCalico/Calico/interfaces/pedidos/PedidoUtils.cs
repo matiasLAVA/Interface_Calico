@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Text;
 
 namespace Calico.interfaces.pedidos
 {
@@ -66,6 +67,7 @@ namespace Calico.interfaces.pedidos
         {
             String myJsonString = String.Empty;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Proxy = null;  //12/07/2019 
             String encoded = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(user + ":" + pass));
             request.Headers.Add("Authorization", "Basic " + encoded);
             request.ContentType = "application/json";
@@ -201,7 +203,7 @@ namespace Calico.interfaces.pedidos
             }
 
             pedido.pedc_cliente = cliente;
-            pedido.pedc_destinatario = !String.IsNullOrWhiteSpace(pedidoDTO.F4201_AN8) ? pedidoDTO.F4201_AN8.Trim() : String.Empty;
+            pedido.pedc_destinatario = !String.IsNullOrWhiteSpace(pedidoDTO.F4201_SHAN) ? pedidoDTO.F4201_SHAN.Trim() : String.Empty;
             pedido.pedc_referenciaA = !String.IsNullOrWhiteSpace(pedidoDTO.F4201_VR01) ? pedidoDTO.F4201_VR01.Trim() : String.Empty;
             pedido.pedc_referenciaB = !String.IsNullOrWhiteSpace(pedidoDTO.F4201_VR02) ? pedidoDTO.F4201_VR02.Trim() : String.Empty;
             pedido.pedc_pais =  !String.IsNullOrWhiteSpace(pedidoDTO.F4006_COUN) ? pedidoDTO.F4006_COUN.Trim() : String.Empty;
@@ -220,6 +222,14 @@ namespace Calico.interfaces.pedidos
             pedido.pedc_observaciones = String.Empty;
             pedido.pedc_prioridad = 0;
             pedido.pedc_razonSocial = String.Empty;
+            pedido.pedc_referenciaA = String.Empty;
+            pedido.pedc_referenciaB = !String.IsNullOrWhiteSpace(pedidoDTO.F4201_DCTO) ? pedidoDTO.F4201_DCTO.Trim() : String.Empty;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(!String.IsNullOrWhiteSpace(pedidoDTO.F4201_VR01) ? pedidoDTO.F4201_VR01.Trim() : String.Empty).Append(" ");
+            sb.Append(!String.IsNullOrWhiteSpace(pedidoDTO.F4201_VR02) ? pedidoDTO.F4201_VR02.Trim() : String.Empty).Append(" "); ;
+            sb.Append(!String.IsNullOrWhiteSpace(pedidoDTO.F4201_DEL1) ? pedidoDTO.F4201_DEL1.Trim() : String.Empty);
+            pedido.pedc_observaciones = sb.ToString();
 
             return pedido;
         }

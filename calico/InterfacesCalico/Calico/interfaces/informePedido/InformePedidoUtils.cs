@@ -14,7 +14,7 @@ namespace Calico.interfaces.informePedido
 
         public static String LAST_ERROR = String.Empty;
 
-        public List<InformePedidoJson> MappingInforme(tblInformePedido informe, String orderCompany,String orderType, String lastStatus,String nextStatus, String version)
+        public List<InformePedidoJson> MappingInforme(tblInformePedido informe, String orderCompany, String lastStatus,String nextStatus, String version)
         {
             List<InformePedidoJson> jsonList = new List<InformePedidoJson>();
 
@@ -24,7 +24,7 @@ namespace Calico.interfaces.informePedido
 
                 informeDTO.OrderCompany = orderCompany;
                 informeDTO.OrderNumber = informe.ipec_numero.ToString();
-                informeDTO.OrderType = orderType;
+                informeDTO.OrderType = informe.ipec_referenciaB;
                 informeDTO.OrderLineNumber = detalle.iped_linea.ToString();
                 informeDTO.Lot = Utils.GetValueOrEmpty(detalle.iped_lote);
                 informeDTO.ItemNumber = detalle.iped_producto.TrimStart(new Char[] { '0' }).Trim(); // sin CEROS a la izquierda;
@@ -64,6 +64,7 @@ namespace Calico.interfaces.informePedido
         {
             String myJsonString = String.Empty;
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
+            request.Proxy = null;  //12/07/2019 
             String encoded = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(user + ":" + pass));
             request.Headers.Add("Authorization", "Basic " + encoded);
             request.ContentType = "application/json";

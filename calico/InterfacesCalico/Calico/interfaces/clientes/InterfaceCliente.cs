@@ -100,18 +100,17 @@ namespace Calico.interfaces.clientes
             // LLamando al SP por cada cliente
             int? tipoProceso = FilePropertyUtils.Instance.GetValueInt(INTERFACE, Constants.NUMERO_INTERFACE);
 
-            int? tipoMensaje = 0;
-            int codigoCliente = FilePropertyUtils.Instance.GetValueInt(INTERFACE, Constants.NUMERO_CLIENTE);
+            int? tipoMensaje = 0;            
             int count = 0;
             int countError = 0;
             Console.WriteLine("Codigo de interface: " + tipoProceso);
             Console.WriteLine("Llamando al SP por cada cliente");
             foreach (KeyValuePair<string, tblSubCliente> entry in diccionary)
             {
-                Console.WriteLine("Procesando cliente: " + entry.Value.subc_codigoCliente);
+                Console.WriteLine("Procesando cliente: " + entry.Value.subc_codigo);
                 int sub_proc_id = serviceCliente.CallProcedure(tipoProceso, tipoMensaje);
                 entry.Value.subc_proc_id = sub_proc_id;
-                entry.Value.subc_codigo = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.NUMERO_CLIENTE);
+                entry.Value.subc_codigoCliente = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.NUMERO_CLIENTE);
                 entry.Value.subc_areaMuelle = String.Empty;
                 entry.Value.subc_telefono = String.Empty;
 
@@ -121,7 +120,7 @@ namespace Calico.interfaces.clientes
                 }
                 catch (DbEntityValidationException ex)
                 {
-                    Console.Error.WriteLine("Error al agregar cliente: " + entry.Value.subc_codigoCliente);
+                    Console.Error.WriteLine("Error al agregar cliente: " + entry.Value.subc_codigo);
                     foreach (var errors in ex.EntityValidationErrors)
                     {
                         foreach (var validationError in errors.ValidationErrors)
@@ -132,7 +131,7 @@ namespace Calico.interfaces.clientes
                     }
                     countError++;
                 } catch (Exception ex) {
-                    Console.Error.WriteLine("Error desconocido al agregar cliente: " + entry.Value.subc_codigoCliente);
+                    Console.Error.WriteLine("Error desconocido al agregar cliente: " + entry.Value.subc_codigo);
                     Console.Error.WriteLine(ex.Message);
                     countError++;
                 }
