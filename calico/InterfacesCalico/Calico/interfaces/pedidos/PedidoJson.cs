@@ -24,5 +24,22 @@ namespace Calico.interfaces.pedidos
         public String OrTy12 { get; set; }
         public String OrTy13 { get; set; }
         public String OrTy14 { get; set; }
+        public String MCU01 { get; set; }
+        public String MCU02 { get; set; }
+        public String MCU03 { get; set; }
+        public String MCU04 { get; set; }
+        public String MCU05 { get; set; }
+        public String MCU06 { get; set; }
+        public String MCU07 { get; set; }
+        public String MCU08 { get; set; }
+        public String MCU09 { get; set; }
+        public String MCU10 { get; set; }
+        public String MCU11 { get; set; }
+        public String MCU12 { get; set; }
+        public String MCU13 { get; set; }
+        public String MCU14 { get; set; }
+        public String MCU15 { get; set; }
+        public String MCU16 { get; set; }
+
     }
 }

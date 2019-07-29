@@ -22,6 +22,18 @@ namespace Calico.interfaces.pedidos
             return Utils.BuildUrl(urlParam, dictionary);
         }
 
+        public String GetValueOrEmpty(String index)
+        {
+            try {
+                String value = FilePropertyUtils.Instance.GetValueString(Constants.INTERFACE_PEDIDOS + "." + Constants.MCU, Constants.MCU + index);
+                return "0".Equals(value) ? String.Empty : value;
+            }
+            catch (Exception)
+            {
+                return String.Empty;
+            }
+        }
+
         public String GetValueOrEmpty(String[] tipos,int size)
         {
             if(tipos.Length >= size)
@@ -52,6 +64,23 @@ namespace Calico.interfaces.pedidos
             json.OrTy12 = GetValueOrEmpty(tipos, 12);
             json.OrTy13 = GetValueOrEmpty(tipos, 13);
             json.OrTy14 = GetValueOrEmpty(tipos, 14);
+
+            json.MCU01 = GetValueOrEmpty("01");
+            json.MCU02 = GetValueOrEmpty("02");
+            json.MCU03 = GetValueOrEmpty("03");
+            json.MCU04 = GetValueOrEmpty("04");
+            json.MCU05 = GetValueOrEmpty("05");
+            json.MCU06 = GetValueOrEmpty("06");
+            json.MCU07 = GetValueOrEmpty("07");
+            json.MCU08 = GetValueOrEmpty("08");
+            json.MCU09 = GetValueOrEmpty("09");
+            json.MCU10 = GetValueOrEmpty("10");
+            json.MCU11 = GetValueOrEmpty("11");
+            json.MCU12 = GetValueOrEmpty("12");
+            json.MCU13 = GetValueOrEmpty("13");
+            json.MCU14 = GetValueOrEmpty("14");
+            json.MCU15 = GetValueOrEmpty("15");
+            json.MCU16 = GetValueOrEmpty("16");
 
             return json;
 
