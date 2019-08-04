@@ -60,7 +60,7 @@ namespace Calico.interfaces.informePedido
             return false;
         }
 
-        public Boolean SendRequestPost(string url, String user, String pass, String json)
+        public String SendRequestPost(string url, String user, String pass, String json)
         {
             String myJsonString = String.Empty;
             HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
@@ -85,7 +85,7 @@ namespace Calico.interfaces.informePedido
                     using (var reader = new StreamReader(response.GetResponseStream()))
                     {
                         myJsonString = reader.ReadToEnd();
-                        return true;
+                        return myJsonString;
                     }
                 }
             }
@@ -103,7 +103,7 @@ namespace Calico.interfaces.informePedido
                 Console.Error.WriteLine(ex.Message);
             }
 
-            return false;
+            return String.Empty;
 
         }
 

@@ -65,6 +65,7 @@ namespace Calico.interfaces.informePedido
             String nextStatus = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.INTERFACE_INFORME_PEDIDO_NEXT_STATUS);
             String version = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.INTERFACE_INFORME_PEDIDO_P554211I_VERSION);
             int tipoProceso = FilePropertyUtils.Instance.GetValueInt(INTERFACE, Constants.TIPO_PROCESO);
+            String logDetail = FilePropertyUtils.Instance.GetValueString(INTERFACE, Constants.INTERFACE_INFORME_PEDIDO_LOG_DETAIL);
 
             var almacenes = FilePropertyUtils.Instance.GetValueArrayString(INTERFACE + "." + Constants.ALMACEN);
             var tipos = FilePropertyUtils.Instance.GetValueArrayString(INTERFACE + "." + Constants.TIPO);
@@ -84,6 +85,7 @@ namespace Calico.interfaces.informePedido
             int count = 0;
             int countError = 0;
             Boolean callArchivar;
+            String resp = String.Empty;
 
             foreach (tblInformePedido informe in informes)
             {
@@ -98,8 +100,13 @@ namespace Calico.interfaces.informePedido
                         var jsonString = informePedidoUtils.JsonToString(json);
                         Console.WriteLine("Se enviara el siguiente Json al servicio REST: ");
                         Console.WriteLine(jsonString);
+                        /* Si el log_detail esta activado, llamamos al SP para mostrar la request */
+                        if (logDetail != null && logDetail.ToLower().Equals('s'))
+                        {
+                            serviceInformePedido.CallProcedureInformarEjecucion(informe.ipec_proc_id, jsonString, new ObjectParameter("error", typeof(String)));
+                        }
                         /* Send request */
-                        if (!(informePedidoUtils.SendRequestPost(url, user, pass, jsonString)))
+                        if ((resp = informePedidoUtils.SendRequestPost(url, user, pass, jsonString)).Equals(String.Empty))
                         {
                             Console.WriteLine("Se llamara al procedure para informar el error");
                             serviceInformePedido.CallProcedureInformarEjecucion(informe.ipec_proc_id, InformePedidoUtils.LAST_ERROR, new ObjectParameter("error", typeof(String)));
@@ -111,6 +118,13 @@ namespace Calico.interfaces.informePedido
                             Console.WriteLine("El servicio REST retorno OK: " + jsonString);
                             count++;
                         }
+
+                        /* Si el log_detail esta activado, llamamos al SP para mostrar la respuesta */
+                        if (logDetail != null && logDetail.ToLower().Equals('s'))
+                        {
+                            serviceInformePedido.CallProcedureInformarEjecucion(informe.ipec_proc_id, resp, new ObjectParameter("error", typeof(String)));
+                        }
+
                     }
 
                     if (callArchivar)

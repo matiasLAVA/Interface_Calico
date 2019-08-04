@@ -50,6 +50,8 @@ namespace Calico.common
         public const String INTERFACE_INFORME_PEDIDO_LAST_STATUS = "laststatus";
         public const String INTERFACE_INFORME_PEDIDO_NEXT_STATUS = "nextstatus";
         public const String INTERFACE_INFORME_PEDIDO_P554211I_VERSION = "P554211I_Version";
+        public const String INTERFACE_INFORME_PEDIDO_LOG_DETAIL = "log_detail";
+
         // ANULACION REMITO
         public const String INTERFACE_ANULACION_REMITO = "AnulacionRemito";
         public const String INTERFACE_ANULACION_REMITO_URL = "AnulacionRemitoURL";
