@@ -99,7 +99,7 @@ namespace Calico.interfaces.informePedido
                         Console.WriteLine("Se enviara el siguiente Json al servicio REST: ");
                         Console.WriteLine(jsonString);
                         /* Send request */
-                        if (!(informePedidoUtils.SendRequestPost(url, user, pass, jsonString)))
+                        if ((informePedidoUtils.SendRequestPost(url, user, pass, jsonString)).Equals(String.Empty))
                         {
                             Console.WriteLine("Se llamara al procedure para informar el error");
                             serviceInformePedido.CallProcedureInformarEjecucion(informe.ipec_proc_id, InformePedidoUtils.LAST_ERROR, new ObjectParameter("error", typeof(String)));
