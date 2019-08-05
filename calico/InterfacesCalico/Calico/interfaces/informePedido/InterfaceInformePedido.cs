@@ -101,13 +101,19 @@ namespace Calico.interfaces.informePedido
                         Console.WriteLine("Se enviara el siguiente Json al servicio REST: ");
                         Console.WriteLine(jsonString);
                         /* Si el log_detail esta activado, llamamos al SP para mostrar la request */
-                        if (logDetail != null && logDetail.ToLower().Equals('s'))
+                        if (logDetail != null && logDetail.ToLower().Equals("s"))
                         {
+                            Console.WriteLine(Constants.INTERFACE_INFORME_PEDIDO_LOG_DETAIL + "esta activado, se llamara al SP para logear la request.");
                             serviceInformePedido.CallProcedureInformarEjecucion(informe.ipec_proc_id, jsonString, new ObjectParameter("error", typeof(String)));
                         }
+
+                        resp = informePedidoUtils.SendRequestPost(url, user, pass, jsonString);
+                        
                         /* Send request */
-                        if ((resp = informePedidoUtils.SendRequestPost(url, user, pass, jsonString)).Equals(String.Empty))
+                        if (resp.Equals(String.Empty))
                         {
+                            Console.WriteLine("Respuesta:");
+                            Console.WriteLine(InformePedidoUtils.LAST_ERROR);
                             Console.WriteLine("Se llamara al procedure para informar el error");
                             serviceInformePedido.CallProcedureInformarEjecucion(informe.ipec_proc_id, InformePedidoUtils.LAST_ERROR, new ObjectParameter("error", typeof(String)));
                             callArchivar = false;
@@ -115,13 +121,16 @@ namespace Calico.interfaces.informePedido
                         }
                         else
                         {
-                            Console.WriteLine("El servicio REST retorno OK: " + jsonString);
+                            Console.WriteLine("Respuesta:");
+                            Console.WriteLine(resp);
+                            Console.WriteLine("El servicio REST retorno OK");
                             count++;
                         }
 
                         /* Si el log_detail esta activado, llamamos al SP para mostrar la respuesta */
-                        if (logDetail != null && logDetail.ToLower().Equals('s'))
+                        if (logDetail != null && logDetail.ToLower().Equals("s"))
                         {
+                            Console.WriteLine(Constants.INTERFACE_INFORME_PEDIDO_LOG_DETAIL + "esta activado, se llamara al SP para logear la respuesta.");
                             serviceInformePedido.CallProcedureInformarEjecucion(informe.ipec_proc_id, resp, new ObjectParameter("error", typeof(String)));
                         }
 

@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 
 namespace Calico.interfaces.informePedido
@@ -55,10 +56,6 @@ namespace Calico.interfaces.informePedido
             return new InformePedidoJson(list);
         }
 
-        public bool ExistChildrenInJson(String jsonString, String father, String children)
-        {
-            return false;
-        }
 
         public String SendRequestPost(string url, String user, String pass, String json)
         {
@@ -107,14 +104,11 @@ namespace Calico.interfaces.informePedido
 
         }
 
+
+
         public void HandleErrorRest(String myJsonString, out string error)
         {
             JObject json = JObject.Parse(myJsonString);
-
-            Console.WriteLine("Servicio Rest KO");
-            Console.WriteLine("----------------");
-            Console.WriteLine("Detalle: ");
-            Console.WriteLine(json.ToString());
             error = json.ToString();
         }
 
