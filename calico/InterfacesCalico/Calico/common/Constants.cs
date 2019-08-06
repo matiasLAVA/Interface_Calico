@@ -124,6 +124,10 @@ namespace Calico.common
         public const String FAILED_LOAD_DATES = "La fecha de BIANCHI_PROCESS es NULL y no se indico fecha como parametro, no se ejecutara el proceso";
         public const String FAILED_GETTING_DATA = "No se encontraron Pedidos para procesar";
         public const String FAILED_CALL_REST_PEDIDO = "Fallo el llamado Rest Service de Pedidos tipo {0}";
-        
+
+        public const String S = "S";
+        public const String SERVICE_REQUEST_1 = "ServiceRequest1";
+        public const String VALID_JSON_PREFIX = "fs_P554211I_W554211IA";
+
     }
 }

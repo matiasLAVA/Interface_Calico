@@ -56,6 +56,20 @@ namespace Calico.interfaces.informePedido
             return new InformePedidoJson(list);
         }
 
+        public bool ExistErrorInJson(String jsonString)
+        {
+            try
+            {
+                JObject jsonObj = JObject.Parse(jsonString);
+                String data = jsonObj[Constants.SERVICE_REQUEST_1][Constants.VALID_JSON_PREFIX][Constants.JSON_TAG_DATA].ToString();
+                return false;
+            }
+            catch (Exception)
+            {
+                HandleErrorRest(jsonString, out LAST_ERROR);
+                return true;
+            }
+        }
 
         public String SendRequestPost(string url, String user, String pass, String json)
         {
